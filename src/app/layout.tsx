@@ -13,7 +13,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Gia đình Bơ Gấu - Quản lý gia đình",
+  title: "Gia đình Gấu Bơ - Quản lý gia đình",
   description: "Dashboard quản lý thưởng phạt cho con",
   icons: {
     icon: "/favicon.svg",
@@ -30,9 +30,7 @@ export default function RootLayout({
       lang="vi"
       className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="h-full font-sans">
-        {children}
-      </body>
+      <body className="h-full font-sans">{children}</body>
     </html>
   );
 }

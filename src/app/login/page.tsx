@@ -37,7 +37,9 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <span className="text-5xl">🏠</span>
-          <h1 className="text-2xl font-bold text-white mt-3">Gia đình Bơ Gấu</h1>
+          <h1 className="text-2xl font-bold text-white mt-3">
+            Gia đình Gấu Bơ
+          </h1>
           <p className="text-purple-300/70 mt-1">Đăng nhập quản trị</p>
         </div>
 

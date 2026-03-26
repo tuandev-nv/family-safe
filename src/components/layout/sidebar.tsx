@@ -45,13 +45,13 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
         className={cn(
           "fixed inset-y-0 left-0 z-50 w-[280px] bg-gradient-to-b from-[#3B1F6E] to-[#2D1856] flex flex-col transition-transform duration-300",
           "lg:translate-x-0 lg:static lg:z-auto",
-          open ? "translate-x-0" : "-translate-x-full"
+          open ? "translate-x-0" : "-translate-x-full",
         )}
       >
         {/* Logo */}
         <div className="flex items-center justify-between px-6 py-6 border-b border-white/10">
           <div>
-            <h1 className="text-xl font-bold text-white">🏠 Gia đình Bơ Gấu</h1>
+            <h1 className="text-xl font-bold text-white">🏠 Gia đình Gấu Bơ</h1>
           </div>
           <button
             onClick={onToggle}
@@ -80,7 +80,7 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
                   "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors",
                   isActive
                     ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-lg shadow-pink-500/25"
-                    : "text-purple-200/70 hover:text-white hover:bg-white/10"
+                    : "text-purple-200/70 hover:text-white hover:bg-white/10",
                 )}
               >
                 <Icon size={20} />
@@ -89,7 +89,6 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
             );
           })}
         </nav>
-
       </aside>
     </>
   );
