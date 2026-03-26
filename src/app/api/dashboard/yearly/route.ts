@@ -10,23 +10,25 @@ export async function GET(request: NextRequest) {
 
     const yearStart = new Date(year, 0, 1);
     const yearEnd = new Date(year + 1, 0, 1);
+    const yearFilter = { createdAt: { gte: yearStart, lt: yearEnd }, ...notDeleted };
 
-    const [children, activities] = await Promise.all([
+    const [children, activities, redemptions] = await Promise.all([
       prisma.child.findMany({
         where: notDeleted,
         select: { id: true, name: true, emoji: true, avatarUrl: true },
         orderBy: { createdAt: "asc" },
       }),
       prisma.activity.findMany({
-        where: {
-          ...notDeleted,
-          createdAt: { gte: yearStart, lt: yearEnd },
-        },
+        where: yearFilter,
         select: { childId: true, points: true, createdAt: true },
+      }),
+      prisma.redemption.findMany({
+        where: yearFilter,
+        select: { childId: true, points: true },
       }),
     ]);
 
-    // Group by child + month
+    // Group activities by child + month
     const monthlyData: Record<string, Record<number, number>> = {};
     for (const child of children) {
       monthlyData[child.id] = {};
@@ -40,7 +42,13 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    return NextResponse.json({ year, children, monthlyData });
+    // Group redemptions by child
+    const redeemedByChild: Record<string, number> = {};
+    for (const r of redemptions) {
+      redeemedByChild[r.childId] = (redeemedByChild[r.childId] ?? 0) + r.points;
+    }
+
+    return NextResponse.json({ year, children, monthlyData, redeemedByChild });
   } catch (error) {
     return handleApiError(error);
   }

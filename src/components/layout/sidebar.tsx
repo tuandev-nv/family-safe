@@ -9,6 +9,7 @@ import {
   FolderOpen,
   ClipboardList,
   CalendarDays,
+  Gift,
   Menu,
   X,
 } from "lucide-react";
@@ -18,6 +19,7 @@ const navItems = [
   { href: "/children", label: "Trẻ em", icon: Users },
   { href: "/categories", label: "Danh mục", icon: FolderOpen },
   { href: "/activities", label: "Hoạt động", icon: ClipboardList },
+  { href: "/redemptions", label: "Đổi điểm", icon: Gift },
   { href: "/year-summary", label: "Tổng kết năm", icon: CalendarDays },
 ];
 

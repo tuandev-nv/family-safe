@@ -530,8 +530,8 @@ export default function PublicPage() {
           </div>
         ) : (
           <>
-            <MotivationBanner sorted={sorted} />
             <Podium sorted={sorted} />
+            <MotivationBanner sorted={sorted} />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {sorted.map((child, i) => (
                 <ChildCard key={child.id} child={child} rank={i + 1} />

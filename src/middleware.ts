@@ -12,6 +12,8 @@ const ADMIN_ROUTES = [
   "/api/categories",
   "/api/activities",
   "/api/dashboard",
+  "/api/redemptions",
+  "/redemptions",
   "/year-summary",
 ];
 

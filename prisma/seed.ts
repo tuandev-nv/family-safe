@@ -11,152 +11,256 @@ async function loadPrisma() {
 
 async function main() {
   const prisma = await loadPrisma();
-  // Clean up
+
+  // Clean up all data
+  await prisma.redemption.deleteMany();
   await prisma.activity.deleteMany();
   await prisma.categoryLevel.deleteMany();
   await prisma.category.deleteMany();
   await prisma.child.deleteMany();
 
-  // Create children
-  const minh = await prisma.child.create({
-    data: { name: "Minh", emoji: "👦", birthDate: new Date("2018-05-15") },
-  });
+  // ═══════════════════════════════════════════════
+  // CHỈ SEED DANH MỤC THƯỞNG/PHẠT
+  // Trẻ em sẽ do phụ huynh tự thêm
+  // ═══════════════════════════════════════════════
 
-  const linh = await prisma.child.create({
-    data: { name: "Linh", emoji: "👧", birthDate: new Date("2020-09-22") },
-  });
+  // ─── THƯỞNG: 8 danh mục (đa dạng, dễ kiếm điểm) ───
 
-  // Create reward categories
-  const homework = await prisma.category.create({
+  await prisma.category.create({
     data: {
-      name: "Làm bài tập",
+      name: "Học tập",
       type: "REWARD",
       icon: "📚",
       levels: {
         create: [
-          { label: "Hoàn thành", points: 5, sortOrder: 0 },
-          { label: "Tốt", points: 10, sortOrder: 1 },
+          { label: "Hoàn thành bài", points: 5, sortOrder: 0 },
+          { label: "Làm tốt", points: 10, sortOrder: 1 },
           { label: "Xuất sắc", points: 15, sortOrder: 2 },
         ],
       },
     },
-    include: { levels: true },
   });
 
-  const chores = await prisma.category.create({
+  await prisma.category.create({
     data: {
-      name: "Làm việc nhà",
+      name: "Việc nhà",
       type: "REWARD",
       icon: "🧹",
       levels: {
         create: [
-          { label: "Giúp đỡ", points: 5, sortOrder: 0 },
-          { label: "Tự giác", points: 10, sortOrder: 1 },
+          { label: "Giúp đỡ khi được nhờ", points: 3, sortOrder: 0 },
+          { label: "Tự giác làm", points: 8, sortOrder: 1 },
+          { label: "Làm xong gọn gàng", points: 12, sortOrder: 2 },
         ],
       },
     },
-    include: { levels: true },
   });
 
-  const exercise = await prisma.category.create({
+  await prisma.category.create({
     data: {
-      name: "Tập thể dục",
+      name: "Thể dục / Vận động",
       type: "REWARD",
       icon: "🏃",
       levels: {
         create: [
-          { label: "30 phút", points: 5, sortOrder: 0 },
-          { label: "1 tiếng", points: 10, sortOrder: 1 },
+          { label: "Vận động 15 phút", points: 3, sortOrder: 0 },
+          { label: "Vận động 30 phút", points: 5, sortOrder: 1 },
+          { label: "Vận động 1 tiếng", points: 10, sortOrder: 2 },
         ],
       },
     },
-    include: { levels: true },
   });
 
-  // Create penalty categories
-  const fighting = await prisma.category.create({
+  await prisma.category.create({
     data: {
-      name: "Đánh nhau",
+      name: "Đọc sách",
+      type: "REWARD",
+      icon: "📖",
+      levels: {
+        create: [
+          { label: "Đọc 15 phút", points: 5, sortOrder: 0 },
+          { label: "Đọc 30 phút", points: 8, sortOrder: 1 },
+          { label: "Đọc xong 1 cuốn", points: 15, sortOrder: 2 },
+        ],
+      },
+    },
+  });
+
+  await prisma.category.create({
+    data: {
+      name: "Hành vi tốt",
+      type: "REWARD",
+      icon: "🌟",
+      levels: {
+        create: [
+          { label: "Lễ phép, chào hỏi", points: 3, sortOrder: 0 },
+          { label: "Nhường nhịn em/bạn", points: 5, sortOrder: 1 },
+          { label: "Giúp đỡ người khác", points: 8, sortOrder: 2 },
+          { label: "Trung thực, nhận lỗi", points: 10, sortOrder: 3 },
+        ],
+      },
+    },
+  });
+
+  await prisma.category.create({
+    data: {
+      name: "Sáng tạo",
+      type: "REWARD",
+      icon: "🎨",
+      levels: {
+        create: [
+          { label: "Vẽ / Tô màu", points: 5, sortOrder: 0 },
+          { label: "Làm đồ thủ công", points: 8, sortOrder: 1 },
+          { label: "Hoàn thành tác phẩm", points: 12, sortOrder: 2 },
+        ],
+      },
+    },
+  });
+
+  await prisma.category.create({
+    data: {
+      name: "Tự lập",
+      type: "REWARD",
+      icon: "💪",
+      levels: {
+        create: [
+          { label: "Tự ăn / Tự mặc", points: 3, sortOrder: 0 },
+          { label: "Tự chuẩn bị đồ", points: 5, sortOrder: 1 },
+          { label: "Tự quản lý thời gian", points: 10, sortOrder: 2 },
+        ],
+      },
+    },
+  });
+
+  await prisma.category.create({
+    data: {
+      name: "Ngủ đúng giờ",
+      type: "REWARD",
+      icon: "😴",
+      levels: {
+        create: [
+          { label: "Lên giường đúng giờ", points: 5, sortOrder: 0 },
+          { label: "Ngủ sớm không nhắc", points: 8, sortOrder: 1 },
+        ],
+      },
+    },
+  });
+
+  // ─── PHẠT: 6 danh mục (nhẹ, mang tính nhắc nhở) ───
+
+  await prisma.category.create({
+    data: {
+      name: "Đánh nhau / Bạo lực",
       type: "PENALTY",
       icon: "👊",
       levels: {
         create: [
-          { label: "Nhẹ", points: -10, sortOrder: 0 },
-          { label: "Nặng", points: -20, sortOrder: 1 },
+          { label: "Cãi nhau", points: -2, sortOrder: 0 },
+          { label: "Đánh nhẹ", points: -3, sortOrder: 1 },
+          { label: "Đánh nặng", points: -5, sortOrder: 2 },
         ],
       },
     },
-    include: { levels: true },
   });
 
-  const screenTime = await prisma.category.create({
+  await prisma.category.create({
     data: {
       name: "Quá giờ dùng máy",
       type: "PENALTY",
       icon: "📱",
       levels: {
         create: [
-          { label: "15 phút", points: -5, sortOrder: 0 },
-          { label: "30 phút", points: -10, sortOrder: 1 },
-          { label: "1 tiếng+", points: -20, sortOrder: 2 },
+          { label: "Quá 15 phút", points: -1, sortOrder: 0 },
+          { label: "Quá 30 phút", points: -2, sortOrder: 1 },
+          { label: "Quá 1 tiếng", points: -3, sortOrder: 2 },
         ],
       },
     },
-    include: { levels: true },
   });
 
-  // Create sample activities (25+ for pagination demo)
-  const now = new Date();
-  const activities = [
-    { child: minh, cat: homework, levelIdx: 2, daysAgo: 0, note: "Toán lớp 3" },
-    { child: minh, cat: homework, levelIdx: 1, daysAgo: 1 },
-    { child: minh, cat: chores, levelIdx: 1, daysAgo: 1, note: "Rửa bát" },
-    { child: minh, cat: fighting, levelIdx: 0, daysAgo: 2, note: "Với em gái" },
-    { child: minh, cat: exercise, levelIdx: 0, daysAgo: 3 },
-    { child: linh, cat: homework, levelIdx: 1, daysAgo: 0, note: "Tập viết" },
-    { child: linh, cat: chores, levelIdx: 0, daysAgo: 1 },
-    { child: linh, cat: screenTime, levelIdx: 1, daysAgo: 2, note: "Xem YouTube" },
-    { child: linh, cat: exercise, levelIdx: 1, daysAgo: 0 },
-    { child: minh, cat: screenTime, levelIdx: 0, daysAgo: 4 },
-    // More activities for pagination
-    { child: minh, cat: homework, levelIdx: 0, daysAgo: 4, note: "Tiếng Anh" },
-    { child: linh, cat: homework, levelIdx: 2, daysAgo: 3, note: "Vẽ tranh đẹp" },
-    { child: minh, cat: chores, levelIdx: 0, daysAgo: 5, note: "Quét nhà" },
-    { child: linh, cat: exercise, levelIdx: 0, daysAgo: 5 },
-    { child: minh, cat: exercise, levelIdx: 1, daysAgo: 6, note: "Đạp xe" },
-    { child: linh, cat: fighting, levelIdx: 0, daysAgo: 6, note: "Tranh đồ chơi" },
-    { child: minh, cat: homework, levelIdx: 1, daysAgo: 7, note: "Tập đọc" },
-    { child: linh, cat: chores, levelIdx: 1, daysAgo: 7, note: "Dọn phòng" },
-    { child: minh, cat: screenTime, levelIdx: 1, daysAgo: 8, note: "Chơi game" },
-    { child: linh, cat: homework, levelIdx: 0, daysAgo: 8 },
-    { child: minh, cat: chores, levelIdx: 1, daysAgo: 9, note: "Tưới cây" },
-    { child: linh, cat: exercise, levelIdx: 1, daysAgo: 9, note: "Nhảy dây" },
-    { child: minh, cat: homework, levelIdx: 2, daysAgo: 10, note: "Khoa học" },
-    { child: linh, cat: screenTime, levelIdx: 0, daysAgo: 10, note: "Xem TV" },
-    { child: minh, cat: exercise, levelIdx: 0, daysAgo: 11 },
-    { child: linh, cat: homework, levelIdx: 1, daysAgo: 11, note: "Làm toán" },
-    { child: minh, cat: fighting, levelIdx: 1, daysAgo: 12, note: "Đánh em" },
-    { child: linh, cat: chores, levelIdx: 0, daysAgo: 12, note: "Rửa chén" },
-  ];
-
-  for (const a of activities) {
-    const level = a.cat.levels[a.levelIdx];
-    const date = new Date(now);
-    date.setDate(date.getDate() - (a.daysAgo ?? 0));
-
-    await prisma.activity.create({
-      data: {
-        childId: a.child.id,
-        categoryId: a.cat.id,
-        categoryLevelId: level.id,
-        points: level.points,
-        note: a.note ?? null,
-        createdAt: date,
+  await prisma.category.create({
+    data: {
+      name: "Không nghe lời",
+      type: "PENALTY",
+      icon: "🙉",
+      levels: {
+        create: [
+          { label: "Nhắc lần 2 mới làm", points: -1, sortOrder: 0 },
+          { label: "Nhắc 3 lần", points: -2, sortOrder: 1 },
+          { label: "Không chịu làm", points: -3, sortOrder: 2 },
+        ],
       },
-    });
-  }
+    },
+  });
 
-  console.log("Seed completed!");
+  await prisma.category.create({
+    data: {
+      name: "Nói dối",
+      type: "PENALTY",
+      icon: "🤥",
+      levels: {
+        create: [
+          { label: "Nói dối nhỏ", points: -2, sortOrder: 0 },
+          { label: "Nói dối lặp lại", points: -4, sortOrder: 1 },
+        ],
+      },
+    },
+  });
+
+  await prisma.category.create({
+    data: {
+      name: "Mè nheo / Ăn vạ",
+      type: "PENALTY",
+      icon: "😭",
+      levels: {
+        create: [
+          { label: "Mè nheo", points: -1, sortOrder: 0 },
+          { label: "Ăn vạ nơi công cộng", points: -3, sortOrder: 1 },
+        ],
+      },
+    },
+  });
+
+  await prisma.category.create({
+    data: {
+      name: "Bị cô nhắc nhở",
+      type: "PENALTY",
+      icon: "👩‍🏫",
+      levels: {
+        create: [
+          { label: "Nhắc nhở nhẹ", points: -5, sortOrder: 0 },
+          { label: "Nhắc nhở nghiêm túc", points: -10, sortOrder: 1 },
+          { label: "Mời phụ huynh", points: -15, sortOrder: 2 },
+        ],
+      },
+    },
+  });
+
+  await prisma.category.create({
+    data: {
+      name: "Không làm đủ bài tập",
+      type: "PENALTY",
+      icon: "📝",
+      levels: {
+        create: [
+          { label: "Thiếu 1 bài", points: -3, sortOrder: 0 },
+          { label: "Thiếu nhiều bài", points: -5, sortOrder: 1 },
+          { label: "Không làm bài", points: -10, sortOrder: 2 },
+        ],
+      },
+    },
+  });
+
+  console.log("✅ Seed hoàn tất!");
+  console.log("📋 8 danh mục thưởng + 7 danh mục phạt");
+  console.log("👶 Trẻ em: tự thêm trong admin");
+  console.log("");
+  console.log("💡 Nguyên tắc cân bằng:");
+  console.log("   - Thưởng: 3~15 điểm/lần (dễ kiếm)");
+  console.log("   - Phạt: 1~5 điểm/lần (rất nhẹ, nhắc nhở)");
+  console.log("   - Phạt nặng nhất (-5) = 1 lần học tập hoàn thành (+5)");
+  console.log("   - Mục tiêu: ~50-80 điểm/tháng = bé ngoan");
+
   await prisma.$disconnect();
 }
 

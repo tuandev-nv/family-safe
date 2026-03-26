@@ -66,8 +66,13 @@ export function ActivityFormDialog({
   const filteredCategories = categories.filter((c) => c.type === typeTab);
   const selectedCat = categories.find((c) => c.id === selectedCategory);
 
+  const [formError, setFormError] = useState("");
+
   async function handleSubmit() {
-    if (!selectedChild || !selectedCategory || !selectedLevel) return;
+    if (!selectedChild) { setFormError("Vui lòng chọn bé"); return; }
+    if (!selectedCategory) { setFormError("Vui lòng chọn danh mục"); return; }
+    if (!selectedLevel) { setFormError("Vui lòng chọn cấp độ"); return; }
+    setFormError("");
 
     setLoading(true);
     const res = await fetch("/api/activities", {
@@ -220,6 +225,8 @@ export function ActivityFormDialog({
               />
             </div>
           )}
+
+          {formError && <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-sm text-rose-600 font-medium">{formError}</div>}
 
           {/* Actions */}
           <div className="flex gap-3 justify-end pt-2 border-t border-gray-100">

@@ -19,6 +19,7 @@ interface YearlyData {
   year: number;
   children: ChildInfo[];
   monthlyData: Record<string, Record<number, number>>;
+  redeemedByChild: Record<string, number>;
 }
 
 const MONTH_NAMES = ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"];
@@ -86,6 +87,65 @@ export default function YearSummaryPage() {
         <p className="text-muted-foreground py-12 text-center">Chưa có dữ liệu</p>
       ) : (
         <>
+          {/* Year total stats */}
+          {(() => {
+            const yearTotals = data.children.map((child) => {
+              const months = data.monthlyData[child.id] ?? {};
+              const earned = Object.values(months).reduce((s, v) => s + v, 0);
+              const redeemed = data.redeemedByChild[child.id] ?? 0;
+              return { child, earned, redeemed, net: earned - redeemed };
+            });
+            const grandEarned = yearTotals.reduce((s, c) => s + c.earned, 0);
+            const grandRedeemed = yearTotals.reduce((s, c) => s + c.redeemed, 0);
+            const grandNet = grandEarned - grandRedeemed;
+
+            return (
+              <div className="space-y-4 mb-8">
+                {/* Overall row */}
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-white rounded-2xl p-5 border border-purple-100/60 shadow-sm">
+                    <div className="w-12 h-12 rounded-2xl bg-purple-100 flex items-center justify-center text-xl mb-3">⭐</div>
+                    <p className="text-3xl font-extrabold text-gray-800">{grandEarned > 0 ? "+" : ""}{grandEarned}</p>
+                    <p className="text-sm text-gray-400 mt-0.5">Tổng kiếm được</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-5 border border-orange-100/60 shadow-sm">
+                    <div className="w-12 h-12 rounded-2xl bg-orange-100 flex items-center justify-center text-xl mb-3">🎁</div>
+                    <p className="text-3xl font-extrabold text-orange-500">-{grandRedeemed}</p>
+                    <p className="text-sm text-gray-400 mt-0.5">Đã đổi</p>
+                  </div>
+                  <div className="bg-white rounded-2xl p-5 border border-emerald-100/60 shadow-sm">
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-xl mb-3">🏆</div>
+                    <p className={`text-3xl font-extrabold ${grandNet >= 0 ? "text-emerald-600" : "text-rose-500"}`}>
+                      {grandNet > 0 ? "+" : ""}{grandNet}
+                    </p>
+                    <p className="text-sm text-gray-400 mt-0.5">Còn lại năm {year}</p>
+                  </div>
+                </div>
+
+                {/* Per child row */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  {yearTotals.map((item, idx) => {
+                    const colors = ["bg-pink-100", "bg-cyan-100", "bg-amber-100", "bg-emerald-100"];
+                    return (
+                      <div key={item.child.id} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+                        <div className={`w-12 h-12 rounded-2xl ${colors[idx % colors.length]} flex items-center justify-center text-xl mb-3`}>
+                          {item.child.emoji}
+                        </div>
+                        <p className={`text-3xl font-extrabold ${item.net >= 0 ? "text-gray-800" : "text-rose-500"}`}>
+                          {item.net > 0 ? "+" : ""}{item.net}
+                        </p>
+                        <p className="text-sm text-gray-400 mt-0.5">{item.child.name}</p>
+                        {item.redeemed > 0 && (
+                          <p className="text-xs text-orange-400 mt-1">Kiếm {item.earned} / Đổi {item.redeemed}</p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Chart */}
           <div className="rounded-2xl bg-white shadow-sm overflow-hidden border border-gray-100 mb-8">
             <div className="px-5 py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white">
@@ -140,13 +200,17 @@ export default function YearSummaryPage() {
                         {m}
                       </th>
                     ))}
-                    <th className="p-3 text-center font-bold text-gray-700 bg-gray-50 min-w-[80px]">Tổng năm</th>
+                    <th className="p-3 text-center font-bold text-gray-700 bg-gray-50 min-w-[70px]">Kiếm</th>
+                    <th className="p-3 text-center font-bold text-orange-500 bg-orange-50 min-w-[70px]">Đã đổi</th>
+                    <th className="p-3 text-center font-bold text-emerald-700 bg-emerald-50 min-w-[70px]">Còn lại</th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.children.map((child, idx) => {
                     const months = data.monthlyData[child.id] ?? {};
-                    const yearTotal = Object.values(months).reduce((s, v) => s + v, 0);
+                    const earned = Object.values(months).reduce((s, v) => s + v, 0);
+                    const redeemed = data.redeemedByChild[child.id] ?? 0;
+                    const net = earned - redeemed;
                     return (
                       <tr key={child.id} className="border-b border-gray-50 hover:bg-gray-50/50">
                         <td className="p-4 sticky left-0 bg-white">
@@ -173,8 +237,20 @@ export default function YearSummaryPage() {
                           );
                         })}
                         <td className="p-3 text-center bg-gray-50">
-                          <span className={`font-extrabold ${yearTotal >= 0 ? "text-gray-800" : "text-rose-500"}`}>
-                            {yearTotal > 0 ? "+" : ""}{yearTotal}
+                          <span className="font-extrabold text-gray-800">
+                            {earned > 0 ? "+" : ""}{earned}
+                          </span>
+                        </td>
+                        <td className="p-3 text-center bg-orange-50">
+                          {redeemed > 0 ? (
+                            <span className="font-extrabold text-orange-500">-{redeemed}</span>
+                          ) : (
+                            <span className="text-gray-200">-</span>
+                          )}
+                        </td>
+                        <td className="p-3 text-center bg-emerald-50">
+                          <span className={`font-extrabold ${net >= 0 ? "text-emerald-600" : "text-rose-500"}`}>
+                            {net > 0 ? "+" : ""}{net}
                           </span>
                         </td>
                       </tr>

@@ -17,7 +17,19 @@ model Child {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  activities Activity[]
+  activities  Activity[]
+  redemptions Redemption[]
+}
+
+model Redemption {
+  id          String    @id @default(cuid())
+  childId     String
+  points      Int       // positive number = points spent
+  description String
+  createdAt   DateTime  @default(now())
+  deletedAt   DateTime?
+
+  child Child @relation(fields: [childId], references: [id], onDelete: Cascade)
 }
 
 model Category {
