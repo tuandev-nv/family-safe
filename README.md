@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Gia dinh Bo Gau
 
-## Getting Started
+Dashboard quan ly thuong/phat cho con. He thong diem theo thang, tu dong reset moi thang moi.
 
-First, run the development server:
+## Tech Stack
+
+- Next.js 16 (App Router, Turbopack)
+- Prisma 7 + SQLite (better-sqlite3 adapter)
+- shadcn/ui v4 (base-ui) + Tailwind v4
+- Inter font (Vietnamese subset)
+- JWT auth (jose)
+
+## Tinh nang
+
+- Trang public (/) - Bang diem cho con xem, gamified, podium, progress ring
+- Admin dashboard - Thong ke diem theo thang, bieu do xu huong
+- CRUD tre em, danh muc thuong/phat (modal), hoat dong
+- He thong diem theo thang, tu dong reset
+- Doi diem lay phan thuong
+- Tong ket nam (bieu do + bang 12 thang)
+- Soft delete toan bo du lieu
+
+## Cai dat
 
 ```bash
-npm run dev
-# or
+# Clone
+git clone git@github.com:tuandev-nv/family-safe.git
+cd family-safe
+
+# Install
+yarn install --ignore-engines
+
+# Cau hinh
+cp .env .env.local
+# Sua JWT_SECRET, ADMIN_USERNAME, ADMIN_PASSWORD trong .env
+
+# Tao DB + seed du lieu mau
+npx prisma db push
+yarn db:seed
+
+# Dev
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy Production
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Build
+yarn build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Start voi PM2
+pm2 start ecosystem.config.js
 
-## Learn More
+# Xem logs
+pm2 logs family-safe
 
-To learn more about Next.js, take a look at the following resources:
+# Restart
+pm2 restart family-safe
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+App chay tai `http://localhost:3002`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Cap nhat
 
-## Deploy on Vercel
+```bash
+git pull
+yarn install --ignore-engines
+npx prisma db push        # neu schema thay doi
+yarn build
+pm2 restart family-safe
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Reset du lieu
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+yarn db:reset              # Xoa sach + seed lai danh muc
+```
+
+## Cau hinh .env
+
+```
+ADMIN_USERNAME="admin"
+ADMIN_PASSWORD="your-password"
+JWT_SECRET="random-string-at-least-32-chars"
+```
+
+## Seed data
+
+8 danh muc thuong (3-15 diem) + 7 danh muc phat (1-15 diem):
+
+**Thuong:** Hoc tap, Viec nha, The duc, Doc sach, Hanh vi tot, Sang tao, Tu lap, Ngu dung gio
+
+**Phat:** Danh nhau, Qua gio may, Khong nghe loi, Noi doi, Me nheo, Bi co nhac nho, Khong lam bai tap
