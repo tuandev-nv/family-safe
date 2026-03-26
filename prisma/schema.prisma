@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Child {
+  id        String    @id @default(cuid())
+  name      String
+  emoji     String    @default("👦")
+  birthDate DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  activities Activity[]
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String
+  type      String // "REWARD" or "PENALTY"
+  icon      String    @default("⭐")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  levels     CategoryLevel[]
+  activities Activity[]
+}
+
+model CategoryLevel {
+  id         String    @id @default(cuid())
+  categoryId String
+  label      String
+  points     Int
+  sortOrder  Int       @default(0)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  category   Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  activities Activity[]
+}
+
+model Activity {
+  id              String    @id @default(cuid())
+  childId         String
+  categoryId      String
+  categoryLevelId String
+  points          Int
+  note            String?
+  createdAt       DateTime  @default(now())
+  deletedAt       DateTime?
+
+  child         Child         @relation(fields: [childId], references: [id], onDelete: Cascade)
+  category      Category      @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  categoryLevel CategoryLevel @relation(fields: [categoryLevelId], references: [id], onDelete: Restrict)
+}
