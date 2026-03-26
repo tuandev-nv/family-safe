@@ -11,6 +11,7 @@ model Child {
   id        String    @id @default(cuid())
   name      String
   emoji     String    @default("👦")
+  avatarUrl String?
   birthDate DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

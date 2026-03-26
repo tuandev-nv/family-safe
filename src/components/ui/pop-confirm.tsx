@@ -34,31 +34,26 @@ export function PopConfirm({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
-        render={<Button variant={triggerVariant} size={triggerSize} />}
+        render={<Button variant={triggerVariant} size={triggerSize} className="h-10 px-5 rounded-xl text-sm font-semibold" />}
       >
         {triggerLabel}
       </PopoverTrigger>
-      <PopoverContent side="top" align="end" className="w-64 p-3 bg-white">
-        <p className="font-medium text-sm">{title}</p>
-        {description && (
-          <p className="text-xs text-muted-foreground mt-1">{description}</p>
-        )}
-        <div className="flex gap-2 justify-end mt-3">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setOpen(false)}
-          >
+      <PopoverContent side="top" align="end" className="w-72 p-4 bg-white rounded-xl shadow-xl border border-gray-100">
+        <div className="flex items-start gap-3">
+          <span className="w-8 h-8 rounded-xl bg-rose-100 flex items-center justify-center text-base shrink-0 mt-0.5">⚠️</span>
+          <div>
+            <p className="font-bold text-gray-800 text-sm">{title}</p>
+            {description && (
+              <p className="text-xs text-gray-400 mt-0.5">{description}</p>
+            )}
+          </div>
+        </div>
+        <div className="flex gap-2 justify-end mt-4">
+          <Button size="sm" variant="outline" onClick={() => setOpen(false)} className="rounded-lg px-4">
             {cancelText}
           </Button>
-          <Button
-            size="sm"
-            variant="destructive"
-            onClick={() => {
-              onConfirm();
-              setOpen(false);
-            }}
-          >
+          <Button size="sm" variant="destructive" onClick={() => { onConfirm(); setOpen(false); }}
+            className="rounded-lg px-4 bg-gradient-to-r from-rose-500 to-red-500 hover:from-rose-600 hover:to-red-600 shadow shadow-rose-500/20">
             {confirmText}
           </Button>
         </div>

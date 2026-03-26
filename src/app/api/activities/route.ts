@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { activitySchema } from "@/lib/validations/activity";
 import { handleApiError } from "@/lib/api-error";
 import { notDeleted } from "@/lib/soft-delete";
+import { getMonthRange } from "@/lib/date-utils";
 
 export async function GET(request: NextRequest) {
   try {
@@ -11,6 +12,8 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get("type");
     const from = searchParams.get("from");
     const to = searchParams.get("to");
+    const monthParam = searchParams.get("month");
+    const yearParam = searchParams.get("year");
     const page = parseInt(searchParams.get("page") ?? "1");
     const limit = parseInt(searchParams.get("limit") ?? "20");
 
@@ -18,7 +21,12 @@ export async function GET(request: NextRequest) {
 
     if (childId) where.childId = childId;
     if (type) where.category = { type, ...notDeleted };
-    if (from || to) {
+
+    // Month/year filter takes precedence over from/to
+    if (monthParam && yearParam) {
+      const { gte, lt } = getMonthRange(parseInt(yearParam), parseInt(monthParam));
+      where.createdAt = { gte, lt };
+    } else if (from || to) {
       where.createdAt = {
         ...(from ? { gte: new Date(from) } : {}),
         ...(to ? { lte: new Date(to) } : {}),

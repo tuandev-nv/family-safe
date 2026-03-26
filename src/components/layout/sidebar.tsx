@@ -8,6 +8,7 @@ import {
   Users,
   FolderOpen,
   ClipboardList,
+  CalendarDays,
   Menu,
   X,
 } from "lucide-react";
@@ -17,6 +18,7 @@ const navItems = [
   { href: "/children", label: "Trẻ em", icon: Users },
   { href: "/categories", label: "Danh mục", icon: FolderOpen },
   { href: "/activities", label: "Hoạt động", icon: ClipboardList },
+  { href: "/year-summary", label: "Tổng kết năm", icon: CalendarDays },
 ];
 
 interface SidebarProps {
@@ -39,7 +41,7 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-[280px] bg-[#1C2434] flex flex-col transition-transform duration-300",
+          "fixed inset-y-0 left-0 z-50 w-[280px] bg-gradient-to-b from-[#3B1F6E] to-[#2D1856] flex flex-col transition-transform duration-300",
           "lg:translate-x-0 lg:static lg:z-auto",
           open ? "translate-x-0" : "-translate-x-full"
         )}
@@ -47,12 +49,11 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
         {/* Logo */}
         <div className="flex items-center justify-between px-6 py-6 border-b border-white/10">
           <div>
-            <h1 className="text-xl font-bold text-white">🏠 Family Safe</h1>
-            <p className="text-xs text-[#8A99AF] mt-0.5">Quản lý gia đình</p>
+            <h1 className="text-xl font-bold text-white">🏠 Gia đình Bơ Gấu</h1>
           </div>
           <button
             onClick={onToggle}
-            className="lg:hidden text-[#8A99AF] hover:text-white"
+            className="lg:hidden text-purple-200/60 hover:text-white"
           >
             <X size={20} />
           </button>
@@ -60,7 +61,7 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
 
         {/* Navigation */}
         <nav className="flex-1 px-4 py-6 space-y-1">
-          <p className="px-3 mb-3 text-xs font-semibold uppercase tracking-wider text-[#8A99AF]">
+          <p className="px-3 mb-3 text-xs font-semibold uppercase tracking-wider text-purple-200/60">
             Menu
           </p>
           {navItems.map((item) => {
@@ -76,8 +77,8 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
                 className={cn(
                   "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors",
                   isActive
-                    ? "bg-[#465FFF] text-white"
-                    : "text-[#8A99AF] hover:text-white hover:bg-white/5"
+                    ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-lg shadow-pink-500/25"
+                    : "text-purple-200/70 hover:text-white hover:bg-white/10"
                 )}
               >
                 <Icon size={20} />

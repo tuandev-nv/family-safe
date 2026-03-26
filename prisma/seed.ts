@@ -105,7 +105,7 @@ async function main() {
     include: { levels: true },
   });
 
-  // Create sample activities
+  // Create sample activities (25+ for pagination demo)
   const now = new Date();
   const activities = [
     { child: minh, cat: homework, levelIdx: 2, daysAgo: 0, note: "Toán lớp 3" },
@@ -118,6 +118,25 @@ async function main() {
     { child: linh, cat: screenTime, levelIdx: 1, daysAgo: 2, note: "Xem YouTube" },
     { child: linh, cat: exercise, levelIdx: 1, daysAgo: 0 },
     { child: minh, cat: screenTime, levelIdx: 0, daysAgo: 4 },
+    // More activities for pagination
+    { child: minh, cat: homework, levelIdx: 0, daysAgo: 4, note: "Tiếng Anh" },
+    { child: linh, cat: homework, levelIdx: 2, daysAgo: 3, note: "Vẽ tranh đẹp" },
+    { child: minh, cat: chores, levelIdx: 0, daysAgo: 5, note: "Quét nhà" },
+    { child: linh, cat: exercise, levelIdx: 0, daysAgo: 5 },
+    { child: minh, cat: exercise, levelIdx: 1, daysAgo: 6, note: "Đạp xe" },
+    { child: linh, cat: fighting, levelIdx: 0, daysAgo: 6, note: "Tranh đồ chơi" },
+    { child: minh, cat: homework, levelIdx: 1, daysAgo: 7, note: "Tập đọc" },
+    { child: linh, cat: chores, levelIdx: 1, daysAgo: 7, note: "Dọn phòng" },
+    { child: minh, cat: screenTime, levelIdx: 1, daysAgo: 8, note: "Chơi game" },
+    { child: linh, cat: homework, levelIdx: 0, daysAgo: 8 },
+    { child: minh, cat: chores, levelIdx: 1, daysAgo: 9, note: "Tưới cây" },
+    { child: linh, cat: exercise, levelIdx: 1, daysAgo: 9, note: "Nhảy dây" },
+    { child: minh, cat: homework, levelIdx: 2, daysAgo: 10, note: "Khoa học" },
+    { child: linh, cat: screenTime, levelIdx: 0, daysAgo: 10, note: "Xem TV" },
+    { child: minh, cat: exercise, levelIdx: 0, daysAgo: 11 },
+    { child: linh, cat: homework, levelIdx: 1, daysAgo: 11, note: "Làm toán" },
+    { child: minh, cat: fighting, levelIdx: 1, daysAgo: 12, note: "Đánh em" },
+    { child: linh, cat: chores, levelIdx: 0, daysAgo: 12, note: "Rửa chén" },
   ];
 
   for (const a of activities) {

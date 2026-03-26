@@ -4,10 +4,11 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChildFormDialog } from "@/components/children/child-form-dialog";
 import { ActivityFormDialog } from "@/components/activities/activity-form-dialog";
+import { MonthSelector } from "@/components/ui/month-selector";
+import { getCurrentMonth, formatMonthLabel } from "@/lib/date-utils";
 
 interface ChildDetail {
   id: string;
@@ -34,17 +35,16 @@ export default function ChildDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [editOpen, setEditOpen] = useState(false);
   const [activityOpen, setActivityOpen] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth);
 
   const fetchChild = useCallback(() => {
-    fetch(`/api/children/${id}`)
-      .then((r) => {
-        if (!r.ok) throw new Error("Failed");
-        return r.json();
-      })
+    setLoading(true);
+    fetch(`/api/children/${id}?year=${selectedMonth.year}&month=${selectedMonth.month}`)
+      .then((r) => { if (!r.ok) throw new Error("Failed"); return r.json(); })
       .then(setChild)
       .catch(() => setError("Không thể tải dữ liệu"))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, selectedMonth]);
 
   useEffect(() => { fetchChild(); }, [fetchChild]);
 
@@ -64,40 +64,36 @@ export default function ChildDetailPage() {
         }
       />
 
+      <MonthSelector
+        year={selectedMonth.year}
+        month={selectedMonth.month}
+        onChange={(y, m) => setSelectedMonth({ year: y, month: m })}
+      />
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <Card className="rounded-2xl border-border shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Tổng điểm</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className={`text-3xl font-bold ${child.totalPoints >= 0 ? "text-success" : "text-destructive"}`}>
-              {child.totalPoints > 0 ? "+" : ""}{child.totalPoints}
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="rounded-2xl border-border shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Thưởng</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-success">+{child.rewardPoints}</p>
-          </CardContent>
-        </Card>
-        <Card className="rounded-2xl border-border shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Phạt</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-3xl font-bold text-destructive">-{Math.abs(child.penaltyPoints)}</p>
-          </CardContent>
-        </Card>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+          <p className="text-sm text-gray-400 mb-1">Điểm tháng</p>
+          <p className={`text-3xl font-extrabold ${child.totalPoints >= 0 ? "text-gray-800" : "text-rose-500"}`}>
+            {child.totalPoints > 0 ? "+" : ""}{child.totalPoints}
+          </p>
+        </div>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+          <p className="text-sm text-gray-400 mb-1">Thưởng</p>
+          <p className="text-3xl font-extrabold text-emerald-600">+{child.rewardPoints}</p>
+        </div>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+          <p className="text-sm text-gray-400 mb-1">Phạt</p>
+          <p className="text-3xl font-extrabold text-rose-500">-{Math.abs(child.penaltyPoints)}</p>
+        </div>
       </div>
 
-      <Card className="rounded-2xl border-border shadow-sm">
-        <CardHeader>
-          <CardTitle>Lịch sử hoạt động</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="rounded-2xl bg-white border border-gray-100 shadow-sm overflow-hidden">
+        <div className="px-5 py-4 bg-gradient-to-r from-violet-500 to-purple-600 text-white">
+          <h3 className="text-lg font-bold flex items-center gap-2">
+            <span>📋</span> Hoạt động - {formatMonthLabel(selectedMonth.year, selectedMonth.month)}
+          </h3>
+        </div>
+        <div className="p-5">
           {child.activities.length === 0 ? (
             <p className="text-muted-foreground text-center py-4">Chưa có hoạt động nào</p>
           ) : (
@@ -126,8 +122,8 @@ export default function ChildDetailPage() {
               ))}
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <ChildFormDialog
         open={editOpen}

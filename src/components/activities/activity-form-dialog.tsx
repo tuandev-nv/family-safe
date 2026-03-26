@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -93,26 +92,32 @@ export function ActivityFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Ghi nhận hoạt động</DialogTitle>
+          <DialogTitle className="text-xl font-bold flex items-center gap-2">
+            <span className="w-8 h-8 rounded-xl bg-purple-100 flex items-center justify-center text-lg">🎯</span>
+            Ghi nhận hoạt động
+          </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-5">
+        <div className="space-y-6 mt-2">
           {/* Step 1: Child */}
           <div>
-            <Label className="text-sm font-medium mb-2 block">1. Chọn trẻ</Label>
+            <label className="text-sm font-bold text-gray-700 mb-2.5 block flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs flex items-center justify-center font-bold">1</span>
+              Chọn trẻ
+            </label>
             <div className="flex flex-wrap gap-2">
               {children.map((child) => (
                 <button
                   key={child.id}
                   onClick={() => setSelectedChild(child.id)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 text-sm transition-colors ${
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 text-sm font-medium transition-all cursor-pointer ${
                     selectedChild === child.id
-                      ? "border-primary bg-primary/10"
-                      : "border-border hover:border-primary/50"
+                      ? "border-purple-500 bg-purple-50 text-purple-700 shadow-md shadow-purple-500/10"
+                      : "border-gray-200 bg-white text-gray-700 hover:border-purple-300 hover:bg-purple-50/50"
                   }`}
                 >
-                  <span className="text-lg">{child.emoji}</span>
-                  <span className="font-medium">{child.name}</span>
+                  <span className="text-xl">{child.emoji}</span>
+                  <span>{child.name}</span>
                 </button>
               ))}
             </div>
@@ -120,51 +125,51 @@ export function ActivityFormDialog({
 
           {/* Step 2: Category */}
           <div>
-            <Label className="text-sm font-medium mb-2 block">2. Chọn danh mục</Label>
-            <div className="flex gap-2 mb-2">
-              <Button
-                variant={typeTab === "REWARD" ? "default" : "outline"}
-                size="sm"
-                onClick={() => {
-                  setTypeTab("REWARD");
-                  setSelectedCategory("");
-                  setSelectedLevel("");
-                }}
+            <label className="text-sm font-bold text-gray-700 mb-2.5 block flex items-center gap-2">
+              <span className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs flex items-center justify-center font-bold">2</span>
+              Chọn danh mục
+            </label>
+            <div className="flex gap-2 mb-3">
+              <button
+                onClick={() => { setTypeTab("REWARD"); setSelectedCategory(""); setSelectedLevel(""); }}
+                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer ${
+                  typeTab === "REWARD"
+                    ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/20"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
               >
                 🎁 Thưởng
-              </Button>
-              <Button
-                variant={typeTab === "PENALTY" ? "destructive" : "outline"}
-                size="sm"
-                onClick={() => {
-                  setTypeTab("PENALTY");
-                  setSelectedCategory("");
-                  setSelectedLevel("");
-                }}
+              </button>
+              <button
+                onClick={() => { setTypeTab("PENALTY"); setSelectedCategory(""); setSelectedLevel(""); }}
+                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer ${
+                  typeTab === "PENALTY"
+                    ? "bg-gradient-to-r from-rose-500 to-orange-500 text-white shadow-md shadow-rose-500/20"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
               >
                 ⚠️ Phạt
-              </Button>
+              </button>
             </div>
             <div className="flex flex-wrap gap-2">
               {filteredCategories.map((cat) => (
                 <button
                   key={cat.id}
-                  onClick={() => {
-                    setSelectedCategory(cat.id);
-                    setSelectedLevel("");
-                  }}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 text-sm transition-colors ${
+                  onClick={() => { setSelectedCategory(cat.id); setSelectedLevel(""); }}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 text-sm font-medium transition-all cursor-pointer ${
                     selectedCategory === cat.id
-                      ? "border-primary bg-primary/10"
-                      : "border-border hover:border-primary/50"
+                      ? typeTab === "REWARD"
+                        ? "border-emerald-500 bg-emerald-50 text-emerald-700 shadow-md shadow-emerald-500/10"
+                        : "border-rose-500 bg-rose-50 text-rose-700 shadow-md shadow-rose-500/10"
+                      : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
                   }`}
                 >
-                  <span>{cat.icon}</span>
+                  <span className="text-lg">{cat.icon}</span>
                   <span>{cat.name}</span>
                 </button>
               ))}
               {filteredCategories.length === 0 && (
-                <p className="text-sm text-muted-foreground">Chưa có danh mục</p>
+                <p className="text-sm text-gray-400 py-2">Chưa có danh mục</p>
               )}
             </div>
           </div>
@@ -172,26 +177,26 @@ export function ActivityFormDialog({
           {/* Step 3: Level */}
           {selectedCat && (
             <div>
-              <Label className="text-sm font-medium mb-2 block">3. Chọn cấp độ</Label>
+              <label className="text-sm font-bold text-gray-700 mb-2.5 block flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs flex items-center justify-center font-bold">3</span>
+                Chọn cấp độ
+              </label>
               <div className="flex flex-wrap gap-2">
                 {selectedCat.levels.map((level) => (
                   <button
                     key={level.id}
                     onClick={() => setSelectedLevel(level.id)}
-                    className={`px-3 py-2 rounded-lg border-2 text-sm transition-colors ${
+                    className={`px-4 py-2.5 rounded-xl border-2 text-sm font-medium transition-all cursor-pointer ${
                       selectedLevel === level.id
-                        ? "border-primary bg-primary/10"
-                        : "border-border hover:border-primary/50"
+                        ? "border-purple-500 bg-purple-50 text-purple-700 shadow-md shadow-purple-500/10"
+                        : "border-gray-200 bg-white text-gray-700 hover:border-purple-300"
                     }`}
                   >
-                    <span className="font-medium">{level.label}</span>
-                    <span
-                      className={`ml-2 font-mono ${
-                        level.points >= 0 ? "text-success" : "text-destructive"
-                      }`}
-                    >
-                      {level.points > 0 ? "+" : ""}
-                      {level.points}
+                    <span className="font-semibold">{level.label}</span>
+                    <span className={`ml-2 font-mono font-bold ${
+                      level.points >= 0 ? "text-emerald-600" : "text-rose-600"
+                    }`}>
+                      {level.points > 0 ? "+" : ""}{level.points}
                     </span>
                   </button>
                 ))}
@@ -202,27 +207,29 @@ export function ActivityFormDialog({
           {/* Step 4: Note */}
           {selectedLevel && (
             <div>
-              <Label htmlFor="activity-note" className="text-sm font-medium mb-2 block">
-                4. Ghi chú (tùy chọn)
-              </Label>
+              <label className="text-sm font-bold text-gray-700 mb-2.5 block flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-gray-200 text-gray-500 text-xs flex items-center justify-center font-bold">4</span>
+                Ghi chú (tùy chọn)
+              </label>
               <Textarea
-                id="activity-note"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder="Ghi chú thêm..."
                 rows={2}
+                className="bg-white border-gray-200 rounded-xl"
               />
             </div>
           )}
 
           {/* Actions */}
-          <div className="flex gap-2 justify-end pt-2">
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <div className="flex gap-3 justify-end pt-2 border-t border-gray-100">
+            <Button variant="outline" onClick={() => onOpenChange(false)} className="px-6 h-11 rounded-xl">
               Hủy
             </Button>
             <Button
               onClick={handleSubmit}
               disabled={!selectedChild || !selectedCategory || !selectedLevel || loading}
+              className="px-8 h-11 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/25 text-base font-bold"
             >
               {loading ? "Đang lưu..." : "Ghi nhận"}
             </Button>

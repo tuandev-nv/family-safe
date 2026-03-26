@@ -3,23 +3,37 @@ import { prisma } from "@/lib/prisma";
 import { childSchema } from "@/lib/validations/child";
 import { handleApiError } from "@/lib/api-error";
 import { notDeleted } from "@/lib/soft-delete";
+import { getMonthRange, parseMonthParams } from "@/lib/date-utils";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const children = await prisma.child.findMany({
-      where: notDeleted,
-      include: {
-        activities: {
-          where: notDeleted,
-          select: { points: true },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-    });
+    const { year, month } = parseMonthParams(request.nextUrl.searchParams);
+    const { gte, lt } = getMonthRange(year, month);
+    const monthFilter = { createdAt: { gte, lt }, ...notDeleted };
 
-    const result = children.map(({ activities, ...child }) => ({
+    const [children, monthlyByChild, allTimeByChild] = await Promise.all([
+      prisma.child.findMany({ where: notDeleted, orderBy: { createdAt: "desc" } }),
+      prisma.activity.groupBy({
+        by: ["childId"],
+        where: monthFilter,
+        _sum: { points: true },
+      }),
+      prisma.activity.groupBy({
+        by: ["childId"],
+        where: notDeleted,
+        _sum: { points: true },
+      }),
+    ]);
+
+    const monthlyMap = new Map(monthlyByChild.map((p) => [p.childId, p._sum.points ?? 0]));
+    const allTimeMap = new Map(allTimeByChild.map((p) => [p.childId, p._sum.points ?? 0]));
+
+    const result = children.map((child) => ({
       ...child,
-      totalPoints: activities.reduce((sum, a) => sum + a.points, 0),
+      monthlyPoints: monthlyMap.get(child.id) ?? 0,
+      allTimePoints: allTimeMap.get(child.id) ?? 0,
+      // Keep totalPoints as alias for backward compat
+      totalPoints: monthlyMap.get(child.id) ?? 0,
     }));
 
     return NextResponse.json(result);
@@ -44,9 +58,8 @@ export async function POST(request: NextRequest) {
       data: {
         name: parsed.data.name,
         emoji: parsed.data.emoji,
-        birthDate: parsed.data.birthDate
-          ? new Date(parsed.data.birthDate)
-          : null,
+        avatarUrl: parsed.data.avatarUrl || null,
+        birthDate: parsed.data.birthDate ? new Date(parsed.data.birthDate) : null,
       },
     });
 
