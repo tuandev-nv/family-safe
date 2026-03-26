@@ -38,5 +38,5 @@ export function getAuthCookieName(): string {
 export function validateCredentials(username: string, password: string): boolean {
   const adminUser = process.env.ADMIN_USERNAME ?? "admin";
   const adminPass = process.env.ADMIN_PASSWORD ?? "family2024";
-  return username === adminUser && password === adminPass;
+  return username.toLowerCase() === adminUser.toLowerCase() && password === adminPass;
 }
