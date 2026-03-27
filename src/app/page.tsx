@@ -134,7 +134,7 @@ function ConfettiBurst() {
 }
 
 /* ─── Progress ring ─── */
-function ProgressRing({ points, max = 100 }: { points: number; max?: number }) {
+function ProgressRing({ points, max = 80 }: { points: number; max?: number }) {
   const [animated, setAnimated] = useState(false);
   const percentage = Math.min(Math.max((points / max) * 100, 0), 100);
   const radius = 52;
@@ -151,13 +151,15 @@ function ProgressRing({ points, max = 100 }: { points: number; max?: number }) {
   }, []);
 
   const colors =
-    points >= 50
+    points >= 60
       ? { from: "#10B981", to: "#06B6D4" }
-      : points >= 25
+      : points >= 40
         ? { from: "#8B5CF6", to: "#EC4899" }
-        : points >= 0
+        : points >= 20
           ? { from: "#F59E0B", to: "#F97316" }
-          : { from: "#EF4444", to: "#DC2626" };
+          : points >= 0
+            ? { from: "#8B5CF6", to: "#A855F7" }
+            : { from: "#EF4444", to: "#DC2626" };
 
   return (
     <div className="relative inline-flex items-center justify-center">
@@ -210,25 +212,25 @@ function ProgressRing({ points, max = 100 }: { points: number; max?: number }) {
 function getLevelInfo(points: number) {
   const levels = [
     {
-      min: 100,
+      min: 80,
       label: "Siêu sao",
       icon: "👑",
       gradient: "from-yellow-400 to-amber-500",
     },
     {
-      min: 75,
+      min: 60,
       label: "Tuyệt vời",
       icon: "🏆",
       gradient: "from-yellow-300 to-yellow-500",
     },
     {
-      min: 50,
+      min: 40,
       label: "Giỏi lắm",
       icon: "🥇",
       gradient: "from-blue-400 to-indigo-500",
     },
     {
-      min: 25,
+      min: 20,
       label: "Cố gắng",
       icon: "🥈",
       gradient: "from-emerald-400 to-teal-500",
@@ -349,14 +351,14 @@ function ChildCard({ child, rank }: { child: ChildPublic; rank: number }) {
             <span className="text-sm font-medium text-gray-600">
               {(() => {
                 const nextLevel =
-                  child.totalPoints < 25
-                    ? { target: 25, label: "Cố gắng 🥈" }
-                    : child.totalPoints < 50
-                      ? { target: 50, label: "Giỏi lắm 🥇" }
-                      : child.totalPoints < 75
-                        ? { target: 75, label: "Tuyệt vời 🏆" }
-                        : child.totalPoints < 100
-                          ? { target: 100, label: "Siêu sao 👑" }
+                  child.totalPoints < 20
+                    ? { target: 20, label: "Cố gắng 🥈" }
+                    : child.totalPoints < 40
+                      ? { target: 40, label: "Giỏi lắm 🥇" }
+                      : child.totalPoints < 60
+                        ? { target: 60, label: "Tuyệt vời 🏆" }
+                        : child.totalPoints < 80
+                          ? { target: 80, label: "Siêu sao 👑" }
                           : null;
                 if (!nextLevel) return "Hạng cao nhất rồi! 🎉";
                 const need = nextLevel.target - child.totalPoints;

@@ -66,24 +66,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const level = await prisma.categoryLevel.findFirst({
-      where: { id: parsed.data.categoryLevelId, ...notDeleted },
-    });
+    // Fetch all related data for snapshot
+    const [child, category, level] = await Promise.all([
+      prisma.child.findFirst({ where: { id: parsed.data.childId, ...notDeleted } }),
+      prisma.category.findFirst({ where: { id: parsed.data.categoryId, ...notDeleted } }),
+      prisma.categoryLevel.findFirst({ where: { id: parsed.data.categoryLevelId, ...notDeleted } }),
+    ]);
 
-    if (!level) {
+    if (!child || !category || !level) {
       return NextResponse.json(
-        { error: "Cấp độ không tồn tại" },
+        { error: "Dữ liệu không tồn tại" },
         { status: 400 }
       );
     }
 
     const activity = await prisma.activity.create({
       data: {
-        childId: parsed.data.childId,
-        categoryId: parsed.data.categoryId,
-        categoryLevelId: parsed.data.categoryLevelId,
+        childId: child.id,
+        categoryId: category.id,
+        categoryLevelId: level.id,
         points: level.points,
         note: parsed.data.note ?? null,
+        // Snapshot
+        childName: child.name,
+        childEmoji: child.emoji,
+        categoryName: category.name,
+        categoryIcon: category.icon,
+        categoryType: category.type,
+        levelLabel: level.label,
       },
       include: {
         child: true,

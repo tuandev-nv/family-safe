@@ -1,0 +1,19 @@
+{
+  "status": 307,
+  "headers": {
+    "location": "/children",
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/(admin)/layout,_N_T_/(admin)/children/layout,_N_T_/(admin)/children/new/layout,_N_T_/(admin)/children/new/page,_N_T_/children/new"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/!KGFkbWluKQ/children/new/__PAGE__",
+    "/!KGFkbWluKQ/children/new",
+    "/!KGFkbWluKQ/children",
+    "/!KGFkbWluKQ",
+    "/_index",
+    "/_head"
+  ]
+}

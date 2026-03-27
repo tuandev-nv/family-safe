@@ -66,6 +66,13 @@ model Activity {
   categoryLevelId String
   points          Int
   note            String?
+  // Snapshot at creation time
+  childName       String?
+  childEmoji      String?
+  categoryName    String?
+  categoryIcon    String?
+  categoryType    String?
+  levelLabel      String?
   createdAt       DateTime  @default(now())
   deletedAt       DateTime?
 
