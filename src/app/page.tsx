@@ -54,37 +54,38 @@ function AnimatedBg() {
   );
 }
 
-/* ─── Confetti burst on load ─── */
-function ConfettiBurst() {
-  const particles = useMemo(
+/* ─── Endless emoji rain ─── */
+function EmojiRain() {
+  const drops = useMemo(
     () =>
-      Array.from({ length: 30 }).map((_, i) => ({
+      Array.from({ length: 35 }).map((_, i) => ({
         id: i,
-        emoji: ["🎉", "🎊", "✨", "💫", "⭐", "🌟", "🎈", "🎀", "🦄", "🌈"][i % 10],
-        left: `${5 + Math.random() * 90}%`,
-        delay: `${Math.random() * 3}s`,
-        duration: `${2.5 + Math.random() * 4}s`,
-        size: `${1 + Math.random() * 1.5}rem`,
-        wobble: Math.random() > 0.5 ? "animate-confetti-wobble-left" : "animate-confetti-wobble-right",
+        emoji: ["💖", "🌈", "✨", "⭐", "🦋", "🌸", "🎀", "💫", "🍭", "🧸"][i % 10],
+        left: `${2 + (i * 2.8) % 96}%`,
+        delay: `${(i * 0.4) % 7}s`,
+        duration: `${3.5 + (i % 5) * 1}s`,
+        size: `${0.9 + (i % 4) * 0.3}rem`,
+        wobble: i % 2 === 0 ? "animate-rain-left" : "animate-rain-right",
       })),
     [],
   );
 
   return (
     <div className="fixed inset-0 pointer-events-none z-20 overflow-hidden">
-      {particles.map((p) => (
+      {drops.map((d) => (
         <div
-          key={p.id}
-          className={`absolute ${p.wobble}`}
+          key={d.id}
+          className={`absolute ${d.wobble}`}
           style={{
-            left: p.left,
+            left: d.left,
             top: "-5%",
-            animationDelay: p.delay,
-            animationDuration: p.duration,
-            fontSize: p.size,
+            animationDelay: d.delay,
+            animationDuration: d.duration,
+            fontSize: d.size,
+            opacity: 0.5,
           }}
         >
-          {p.emoji}
+          {d.emoji}
         </div>
       ))}
     </div>
@@ -413,56 +414,75 @@ function ChildCard({ child, rank }: { child: ChildPublic; rank: number }) {
   );
 }
 
+/* ─── Rank with ties ─── */
+function getRanks(sorted: ChildPublic[]): number[] {
+  const ranks: number[] = [];
+  for (let i = 0; i < sorted.length; i++) {
+    if (i === 0 || sorted[i].totalPoints < sorted[i - 1].totalPoints) {
+      ranks.push(i + 1);
+    } else {
+      ranks.push(ranks[i - 1]);
+    }
+  }
+  return ranks;
+}
+
 /* ─── Podium ─── */
-function Podium({ sorted }: { sorted: ChildPublic[] }) {
+function Podium({ sorted, ranks }: { sorted: ChildPublic[]; ranks: number[] }) {
   if (sorted.length < 2) return null;
 
-  const top3 = sorted.slice(0, 3);
-  const display = top3.length === 3 ? [top3[1], top3[0], top3[2]] : [top3[1], top3[0]];
+  const goldConfig = {
+    pillarH: 200, pillarW: "w-40 md:w-52",
+    bg: "bg-gradient-to-t from-amber-600 via-yellow-400 to-amber-300",
+    ring: "ring-[6px] ring-yellow-400/60 shadow-2xl shadow-amber-400/50",
+    avatarBg: "bg-gradient-to-br from-yellow-100 to-amber-100",
+    medal: "🥇", sparkle: true,
+  };
+  const silverConfig = {
+    pillarH: 150, pillarW: "w-36 md:w-44",
+    bg: "bg-gradient-to-t from-slate-500 via-gray-300 to-slate-200",
+    ring: "ring-4 ring-gray-300/50 shadow-xl shadow-gray-400/30",
+    avatarBg: "bg-gradient-to-br from-gray-100 to-slate-100",
+    medal: "🥈", sparkle: false,
+  };
+  const bronzeConfig = {
+    pillarH: 120, pillarW: "w-36 md:w-44",
+    bg: "bg-gradient-to-t from-orange-600 via-amber-400 to-orange-300",
+    ring: "ring-4 ring-orange-300/50 shadow-xl shadow-orange-400/30",
+    avatarBg: "bg-gradient-to-br from-orange-50 to-amber-50",
+    medal: "🥉", sparkle: false,
+  };
 
-  const configs = [
-    {
-      pillarH: 200, pillarW: "w-40 md:w-52",
-      bg: "bg-gradient-to-t from-amber-600 via-yellow-400 to-amber-300",
-      ring: "ring-[6px] ring-yellow-400/60 shadow-2xl shadow-amber-400/50",
-      avatarBg: "bg-gradient-to-br from-yellow-100 to-amber-100",
-      medal: "🥇", sparkle: true,
-    },
-    {
-      pillarH: 150, pillarW: "w-36 md:w-44",
-      bg: "bg-gradient-to-t from-slate-500 via-gray-300 to-slate-200",
-      ring: "ring-4 ring-gray-300/50 shadow-xl shadow-gray-400/30",
-      avatarBg: "bg-gradient-to-br from-gray-100 to-slate-100",
-      medal: "🥈", sparkle: false,
-    },
-    {
-      pillarH: 120, pillarW: "w-36 md:w-44",
-      bg: "bg-gradient-to-t from-orange-600 via-amber-400 to-orange-300",
-      ring: "ring-4 ring-orange-300/50 shadow-xl shadow-orange-400/30",
-      avatarBg: "bg-gradient-to-br from-orange-50 to-amber-50",
-      medal: "🥉", sparkle: false,
-    },
-  ];
+  function getConfigForRank(rank: number) {
+    if (rank === 1) return goldConfig;
+    if (rank === 2) return silverConfig;
+    return bronzeConfig;
+  }
+
+  const top3 = sorted.slice(0, 3);
+  const topRanks = ranks.slice(0, 3);
+  const display = top3.length === 3
+    ? [{ child: top3[1], rank: topRanks[1] }, { child: top3[0], rank: topRanks[0] }, { child: top3[2], rank: topRanks[2] }]
+    : [{ child: top3[1], rank: topRanks[1] }, { child: top3[0], rank: topRanks[0] }];
 
   return (
     <div className="mb-16 px-4">
       <div className="flex justify-center items-end gap-2 md:gap-3">
-        {display.map((child) => {
-          const idx = top3.indexOf(child);
-          const config = configs[idx];
+        {display.map(({ child, rank }) => {
+          const config = getConfigForRank(rank);
           const level = getLevelInfo(child.totalPoints);
-          const isFirst = idx === 0;
+          const isGold = rank === 1;
 
           return (
-            <div key={child.id} className="text-center group animate-podium-rise" style={{ animationDelay: `${idx * 0.2}s` }}>
+            <div key={child.id} className="text-center group animate-podium-rise" style={{ animationDelay: `${rank * 0.2}s` }}>
               {/* Avatar circle */}
               <div className="relative inline-block mb-3">
                 <div
-                  className={`${isFirst ? "w-40 h-40" : "w-28 h-28"} rounded-full ${config.avatarBg} ${config.ring} flex items-center justify-center mx-auto overflow-hidden group-hover:scale-110 group-hover:animate-jelly transition-transform duration-300 will-change-transform`}
+                  className={`${isGold ? "w-40 h-40" : "w-32 h-32"} rounded-full ${config.avatarBg} ${config.ring} flex items-center justify-center mx-auto overflow-hidden group-hover:scale-110 group-hover:animate-jelly transition-transform duration-300 will-change-transform`}
                 >
-                  <ChildAvatar emoji={child.emoji} avatarUrl={child.avatarUrl} size={isFirst ? "4xl" : "3xl"} />
+                  <ChildAvatar emoji={child.emoji} avatarUrl={child.avatarUrl} size={isGold ? "4xl" : "3xl"} />
                 </div>
-                {isFirst && (
+                {isGold && (
                   <div className="absolute -top-5 left-1/2 -translate-x-1/2 text-4xl drop-shadow-lg animate-wiggle">
                     👑
                   </div>
@@ -478,10 +498,10 @@ function Podium({ sorted }: { sorted: ChildPublic[] }) {
               </div>
 
               {/* Name + score */}
-              <p className={`font-black text-gray-800 ${isFirst ? "text-2xl" : "text-lg"}`}>
+              <p className={`font-black text-gray-800 ${isGold ? "text-2xl" : "text-lg"}`}>
                 {child.name}
               </p>
-              <span className={`inline-flex items-center gap-1 ${isFirst ? "text-sm" : "text-xs"} font-bold px-4 py-1.5 rounded-full bg-gradient-to-r ${level.gradient} text-white mt-1.5 mb-3 shadow-lg`}>
+              <span className={`inline-flex items-center gap-1 ${isGold ? "text-sm" : "text-xs"} font-bold px-4 py-1.5 rounded-full bg-gradient-to-r ${level.gradient} text-white mt-1.5 mb-3 shadow-lg`}>
                 {level.icon} {child.totalPoints} điểm
               </span>
 
@@ -492,11 +512,11 @@ function Podium({ sorted }: { sorted: ChildPublic[] }) {
               >
                 <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white/20 to-transparent" />
                 <div className="relative z-10 flex flex-col items-center">
-                  <span className={`${isFirst ? "text-6xl" : "text-5xl"} drop-shadow-xl mb-1`}>
+                  <span className={`${isGold ? "text-6xl" : "text-5xl"} drop-shadow-xl mb-1`}>
                     {config.medal}
                   </span>
-                  <span className={`text-white font-black ${isFirst ? "text-3xl" : "text-xl"} drop-shadow`}>
-                    #{idx + 1}
+                  <span className={`text-white font-black ${isGold ? "text-3xl" : "text-xl"} drop-shadow`}>
+                    #{rank}
                   </span>
                 </div>
               </div>
@@ -551,8 +571,6 @@ export default function PublicPage() {
   const [children, setChildren] = useState<ChildPublic[]>([]);
   const [monthLabel, setMonthLabel] = useState("");
   const [loading, setLoading] = useState(true);
-  const [showConfetti, setShowConfetti] = useState(false);
-
   useEffect(() => {
     fetch("/api/public")
       .then((r) => r.json())
@@ -564,27 +582,20 @@ export default function PublicPage() {
           }));
           setChildren(mapped as ChildPublic[]);
           setMonthLabel(`Tháng ${data.month}/${data.year}`);
-          if (data.children.length > 0) setShowConfetti(true);
         },
       )
       .catch(() => setChildren([]))
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => {
-    if (showConfetti) {
-      const t = setTimeout(() => setShowConfetti(false), 6000);
-      return () => clearTimeout(t);
-    }
-  }, [showConfetti]);
-
   const sorted = [...children].sort((a, b) => b.totalPoints - a.totalPoints);
+  const ranks = getRanks(sorted);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-300 via-fuchsia-200 via-40% to-amber-200 relative">
+    <div className="min-h-screen bg-gradient-to-br from-violet-300 via-fuchsia-200 via-40% to-amber-200 relative select-none">
       <AnimatedBg />
+      <EmojiRain />
       <CursorSparkle />
-      {showConfetti && <ConfettiBurst />}
 
       {/* Header */}
       <header className="relative z-10 text-center pt-14 pb-10 px-4">
@@ -639,11 +650,11 @@ export default function PublicPage() {
           </div>
         ) : (
           <>
-            <Podium sorted={sorted} />
+            <Podium sorted={sorted} ranks={ranks} />
             <MotivationBanner sorted={sorted} />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {sorted.map((child, i) => (
-                <ChildCard key={child.id} child={child} rank={i + 1} />
+                <ChildCard key={child.id} child={child} rank={ranks[i]} />
               ))}
             </div>
           </>
@@ -710,19 +721,19 @@ export default function PublicPage() {
           50% { opacity: 1; transform: scale(1) rotate(180deg); }
           70% { opacity: 0.8; transform: scale(1.2) rotate(270deg); }
         }
-        @keyframes confetti-wobble-left {
-          0% { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 1; }
-          25% { transform: translateY(25vh) rotate(180deg) translateX(-40px); }
-          50% { transform: translateY(55vh) rotate(360deg) translateX(20px); }
-          75% { transform: translateY(80vh) rotate(540deg) translateX(-30px); opacity: 0.7; }
-          100% { transform: translateY(110vh) rotate(720deg) translateX(10px); opacity: 0; }
+        @keyframes rain-left {
+          0% { transform: translateY(-5vh) translateX(0) rotate(0deg); opacity: 0; }
+          5% { opacity: 0.6; }
+          50% { transform: translateY(50vh) translateX(-30px) rotate(180deg); opacity: 0.5; }
+          95% { opacity: 0.3; }
+          100% { transform: translateY(105vh) translateX(10px) rotate(360deg); opacity: 0; }
         }
-        @keyframes confetti-wobble-right {
-          0% { transform: translateY(-10vh) rotate(0deg) translateX(0); opacity: 1; }
-          25% { transform: translateY(25vh) rotate(-180deg) translateX(40px); }
-          50% { transform: translateY(55vh) rotate(-360deg) translateX(-20px); }
-          75% { transform: translateY(80vh) rotate(-540deg) translateX(30px); opacity: 0.7; }
-          100% { transform: translateY(110vh) rotate(-720deg) translateX(-10px); opacity: 0; }
+        @keyframes rain-right {
+          0% { transform: translateY(-5vh) translateX(0) rotate(0deg); opacity: 0; }
+          5% { opacity: 0.6; }
+          50% { transform: translateY(50vh) translateX(30px) rotate(-180deg); opacity: 0.5; }
+          95% { opacity: 0.3; }
+          100% { transform: translateY(105vh) translateX(-10px) rotate(-360deg); opacity: 0; }
         }
         @keyframes tap-sparkle {
           0% { transform: scale(0) rotate(0deg); opacity: 1; }
@@ -772,8 +783,8 @@ export default function PublicPage() {
         :global(.animate-blob) { animation: blob 12s ease-in-out infinite; }
         :global(.animate-shimmer) { animation: shimmer 3s ease-in-out infinite; }
         :global(.animate-sparkle-pop) { animation: sparkle-pop 2.5s ease-in-out infinite; }
-        :global(.animate-confetti-wobble-left) { animation: confetti-wobble-left linear forwards; }
-        :global(.animate-confetti-wobble-right) { animation: confetti-wobble-right linear forwards; }
+        :global(.animate-rain-left) { animation: rain-left linear infinite; }
+        :global(.animate-rain-right) { animation: rain-right linear infinite; }
         :global(.animate-tap-sparkle) { animation: tap-sparkle 1s ease-out forwards; }
         :global(.animate-star-pop) { animation: star-pop 0.5s ease-out forwards; }
         :global(.animate-card-entrance) { animation: card-entrance 0.6s ease-out forwards; }
