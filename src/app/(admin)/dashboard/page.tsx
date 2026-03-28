@@ -271,7 +271,7 @@ export default function DashboardPage() {
                       {child.emoji}
                     </div>
                     <div className="flex items-center gap-3 relative z-10">
-                      <div className="group-hover:scale-110 transition-transform duration-300 drop-shadow-lg">
+                      <div className="group-hover:scale-110 transition-transform duration-300 drop-shadow-lg will-change-transform">
                         <ChildAvatar
                           emoji={child.emoji}
                           avatarUrl={child.avatarUrl}

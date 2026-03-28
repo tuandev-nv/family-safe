@@ -295,11 +295,11 @@ function ChildCard({ child, rank }: { child: ChildPublic; rank: number }) {
         )}
 
         <div className="text-center pt-3 relative z-10">
-          <div className="mb-3 inline-block group-hover:scale-110 transition-transform duration-500 drop-shadow-xl">
+          <div className="mb-3 inline-block group-hover:scale-110 transition-transform duration-500 drop-shadow-xl will-change-transform">
             <ChildAvatar
               emoji={child.emoji}
               avatarUrl={child.avatarUrl}
-              size="2xl"
+              size="3xl"
               className="ring-4 ring-white/30"
             />
           </div>
@@ -486,12 +486,12 @@ function Podium({ sorted }: { sorted: ChildPublic[] }) {
               {/* Avatar circle */}
               <div className="relative inline-block mb-3">
                 <div
-                  className={`${isFirst ? "w-24 h-24" : "w-20 h-20"} rounded-full ${config.avatarBg} ${config.ring} flex items-center justify-center mx-auto overflow-hidden group-hover:scale-110 transition-transform duration-300`}
+                  className={`${isFirst ? "w-32 h-32" : "w-24 h-24"} rounded-full ${config.avatarBg} ${config.ring} flex items-center justify-center mx-auto overflow-hidden group-hover:scale-110 transition-transform duration-300 will-change-transform`}
                 >
                   <ChildAvatar
                     emoji={child.emoji}
                     avatarUrl={child.avatarUrl}
-                    size={isFirst ? "2xl" : "xl"}
+                    size={isFirst ? "3xl" : "2xl"}
                   />
                 </div>
                 {isFirst && (

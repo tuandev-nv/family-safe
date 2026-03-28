@@ -50,9 +50,9 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
       >
         {/* Logo */}
         <div className="flex items-center justify-between px-6 py-6 border-b border-white/10">
-          <div>
+          <Link href="/" className="hover:opacity-80 transition-opacity">
             <h1 className="text-xl font-bold text-white">🏠 Gia đình Gấu Bơ</h1>
-          </div>
+          </Link>
           <button
             onClick={onToggle}
             className="lg:hidden text-purple-200/60 hover:text-white"

@@ -95,20 +95,20 @@ export default function ChildrenPage() {
             return (
               <div key={child.id} className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl transition-shadow duration-300 group">
                 {/* Header gradient */}
-                <div className={`bg-gradient-to-r ${gradients[gi]} p-5 text-white relative overflow-hidden`}>
+                <div className={`bg-gradient-to-r ${gradients[gi]} p-6 text-white relative overflow-hidden`}>
                   <div className="absolute -right-3 -top-3 text-7xl opacity-15">{child.emoji}</div>
-                  <Link href={`/children/${child.id}`} className="flex items-center gap-3 relative z-10">
-                    <div className="group-hover:scale-110 transition-transform duration-300 drop-shadow-lg">
-                      <ChildAvatar emoji={child.emoji} avatarUrl={child.avatarUrl} size="xl" />
+                  <Link href={`/children/${child.id}`} className="flex items-center gap-4 relative z-10">
+                    <div className="group-hover:scale-110 transition-transform duration-300 drop-shadow-lg flex-shrink-0 will-change-transform">
+                      <ChildAvatar emoji={child.emoji} avatarUrl={child.avatarUrl} size="2xl" className="ring-3 ring-white/30" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold">{child.name}</h3>
+                      <h3 className="text-2xl font-bold">{child.name}</h3>
                       {child.birthDate && (
                         <p className="text-white/70 text-sm">{getAge(child.birthDate)} tuổi</p>
                       )}
                       <div className="flex gap-0.5 mt-1">
                         {Array.from({ length: 5 }).map((_, i) => (
-                          <span key={i} className={`text-xs ${i < stars ? "opacity-100" : "opacity-30"}`}>⭐</span>
+                          <span key={i} className={`text-sm ${i < stars ? "opacity-100" : "opacity-30"}`}>⭐</span>
                         ))}
                       </div>
                     </div>
