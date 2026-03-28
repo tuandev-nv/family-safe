@@ -29,7 +29,7 @@ interface Redemption {
   points: number;
   description: string;
   createdAt: string;
-  child: { name: string; emoji: string };
+  child: { name: string; emoji: string; avatarUrl?: string | null };
 }
 
 export default function RedemptionsPage() {
@@ -189,7 +189,7 @@ export default function RedemptionsPage() {
             {redemptions.map((r) => (
               <div key={r.id} className="flex items-center justify-between p-3.5 rounded-xl bg-orange-50/70 hover:bg-orange-50 transition-colors">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">{r.child.emoji}</span>
+                  <ChildAvatar emoji={r.child.emoji} avatarUrl={r.child.avatarUrl} size="md" />
                   <div>
                     <p className="text-base">
                       <span className="font-bold text-gray-800">{r.child.name}</span>

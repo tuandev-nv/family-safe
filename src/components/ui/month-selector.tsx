@@ -43,7 +43,7 @@ export function MonthSelector({ year, month, onChange }: MonthSelectorProps) {
         >
           <ChevronLeft size={18} />
         </button>
-        <span className="px-4 text-sm font-bold text-gray-700 min-w-[140px] text-center">
+        <span className="px-4 text-sm font-bold text-gray-700 min-w-35 text-center">
           {formatMonthLabel(year, month)}
         </span>
         <button

@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     const redemptions = await prisma.redemption.findMany({
       where,
-      include: { child: { select: { name: true, emoji: true } } },
+      include: { child: { select: { name: true, emoji: true, avatarUrl: true } } },
       orderBy: { createdAt: "desc" },
     });
 
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
         points: parsed.data.points,
         description: parsed.data.description,
       },
-      include: { child: { select: { name: true, emoji: true } } },
+      include: { child: { select: { name: true, emoji: true, avatarUrl: true } } },
     });
 
     return NextResponse.json(redemption, { status: 201 });

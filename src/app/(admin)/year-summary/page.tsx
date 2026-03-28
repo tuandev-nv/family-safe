@@ -128,8 +128,8 @@ export default function YearSummaryPage() {
                     const colors = ["bg-pink-100", "bg-cyan-100", "bg-amber-100", "bg-emerald-100"];
                     return (
                       <div key={item.child.id} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-                        <div className={`w-12 h-12 rounded-2xl ${colors[idx % colors.length]} flex items-center justify-center text-xl mb-3`}>
-                          {item.child.emoji}
+                        <div className="mb-3">
+                          <ChildAvatar emoji={item.child.emoji} avatarUrl={item.child.avatarUrl} size="lg" />
                         </div>
                         <p className={`text-3xl font-extrabold ${item.net >= 0 ? "text-gray-800" : "text-rose-500"}`}>
                           {item.net > 0 ? "+" : ""}{item.net}
@@ -190,9 +190,9 @@ export default function YearSummaryPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-100">
-                    <th className="text-left p-4 font-bold text-gray-600 sticky left-0 bg-white min-w-[140px]">Tên</th>
+                    <th className="text-left p-4 font-bold text-gray-600 sticky left-0 bg-white min-w-35">Tên</th>
                     {MONTH_NAMES.map((m, i) => (
-                      <th key={i} className={`p-3 text-center font-bold min-w-[60px] ${
+                      <th key={i} className={`p-3 text-center font-bold min-w-15 ${
                         isCurrentYear && i + 1 === currentMonth
                           ? "bg-purple-50 text-purple-700"
                           : "text-gray-400"
@@ -200,9 +200,9 @@ export default function YearSummaryPage() {
                         {m}
                       </th>
                     ))}
-                    <th className="p-3 text-center font-bold text-gray-700 bg-gray-50 min-w-[70px]">Kiếm</th>
-                    <th className="p-3 text-center font-bold text-orange-500 bg-orange-50 min-w-[70px]">Đã đổi</th>
-                    <th className="p-3 text-center font-bold text-emerald-700 bg-emerald-50 min-w-[70px]">Còn lại</th>
+                    <th className="p-3 text-center font-bold text-gray-700 bg-gray-50 min-w-17.5">Kiếm</th>
+                    <th className="p-3 text-center font-bold text-orange-500 bg-orange-50 min-w-17.5">Đã đổi</th>
+                    <th className="p-3 text-center font-bold text-emerald-700 bg-emerald-50 min-w-17.5">Còn lại</th>
                   </tr>
                 </thead>
                 <tbody>

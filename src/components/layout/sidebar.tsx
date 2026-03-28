@@ -43,7 +43,7 @@ export function Sidebar({ open, onToggle }: SidebarProps) {
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-[280px] bg-gradient-to-b from-[#3B1F6E] to-[#2D1856] flex flex-col transition-transform duration-300",
+          "fixed inset-y-0 left-0 z-50 w-70 bg-gradient-to-b from-[#3B1F6E] to-[#2D1856] flex flex-col transition-transform duration-300",
           "lg:translate-x-0 lg:static lg:z-auto",
           open ? "translate-x-0" : "-translate-x-full",
         )}

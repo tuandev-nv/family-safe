@@ -29,7 +29,7 @@ interface RecentActivity {
   points: number;
   note: string | null;
   createdAt: string;
-  child: { name: string; emoji: string };
+  child: { name: string; emoji: string; avatarUrl?: string | null };
   category: { name: string; type: string; icon: string };
   categoryLevel: { label: string };
 }
@@ -372,7 +372,7 @@ export default function DashboardPage() {
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-2xl">{activity.child.emoji}</span>
+                      <ChildAvatar emoji={activity.child.emoji} avatarUrl={activity.child.avatarUrl} size="md" />
                       <div>
                         <p className="text-base">
                           <span className="font-bold">

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PopConfirm } from "@/components/ui/pop-confirm";
 import { ActivityFormDialog } from "@/components/activities/activity-form-dialog";
+import { ChildAvatar } from "@/components/ui/child-avatar";
 import { MonthSelector } from "@/components/ui/month-selector";
 import { getCurrentMonth } from "@/lib/date-utils";
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
@@ -15,7 +16,7 @@ interface Activity {
   points: number;
   note: string | null;
   createdAt: string;
-  child: { id: string; name: string; emoji: string };
+  child: { id: string; name: string; emoji: string; avatarUrl?: string | null };
   category: { name: string; type: string; icon: string };
   categoryLevel: { label: string };
 }
@@ -169,11 +170,7 @@ export default function ActivitiesPage() {
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-2xl ${
-                          isReward ? "bg-white shadow-sm" : "bg-white shadow-sm"
-                        }`}>
-                          {activity.child.emoji}
-                        </div>
+                        <ChildAvatar emoji={activity.child.emoji} avatarUrl={activity.child.avatarUrl} size="md" />
                         <div>
                           <p className="text-base">
                             <span className="font-bold text-gray-800">{activity.child.name}</span>
