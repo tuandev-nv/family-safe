@@ -18,7 +18,8 @@ interface Activity {
   createdAt: string;
   child: { id: string; name: string; emoji: string; avatarUrl?: string | null };
   category: { name: string; type: string; icon: string };
-  categoryLevel: { label: string };
+  categoryLevel: { label: string } | null;
+  levelLabel: string | null;
 }
 
 interface Child {
