@@ -193,19 +193,16 @@ export function Podium({ sorted, ranks }: { sorted: ChildPublic[]; ranks: number
 
               {/* Pillar */}
               <div
-                className={`${config.pillarW} ${config.bg} rounded-t-[2rem] flex flex-col items-center justify-center relative overflow-hidden mx-auto shadow-inner`}
+                className={`${config.pillarW} ${config.bg} rounded-t-2xl flex flex-col items-center justify-center relative overflow-hidden mx-auto shadow-xl`}
                 style={{ height: config.pillarH }}
               >
-                <div className="absolute inset-y-0 left-0 w-1/3 bg-linear-to-r from-white/20 to-transparent" />
+                <div className="absolute inset-y-0 left-0 w-1/4 bg-linear-to-r from-white/20 to-transparent" />
+                <div className="absolute top-0 left-0 right-0 h-1 bg-white/30" />
                 <div className="relative z-10 flex flex-col items-center">
-                  <span
-                    className={`${isGold ? "text-6xl" : "text-5xl"} drop-shadow-xl mb-1`}
-                  >
+                  <span className={`${isGold ? "text-7xl" : "text-6xl"} drop-shadow-xl mb-2`}>
                     {config.medal}
                   </span>
-                  <span
-                    className={`text-white font-black ${isGold ? "text-3xl" : "text-xl"} drop-shadow`}
-                  >
+                  <span className={`text-white font-black ${isGold ? "text-4xl" : "text-2xl"} drop-shadow-lg`}>
                     #{rank}
                   </span>
                 </div>
@@ -214,7 +211,8 @@ export function Podium({ sorted, ranks }: { sorted: ChildPublic[]; ranks: number
           );
         })}
       </div>
-      <div className="max-w-md md:max-w-lg mx-auto h-3 bg-linear-to-r from-transparent via-gray-300/60 to-transparent rounded-b-full" />
+      {/* Soft ground shadow */}
+      <div className="max-w-lg mx-auto h-5" style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(0,0,0,0.12) 0%, transparent 70%)" }} />
     </div>
   );
 }
