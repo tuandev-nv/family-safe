@@ -125,9 +125,48 @@ export function Podium({ sorted, ranks }: { sorted: ChildPublic[]; ranks: number
           return (
             <div
               key={child.id}
-              className="text-center group animate-podium-rise"
+              className={`text-center group animate-podium-rise relative`}
               style={{ animationDelay: `${rank * 0.2}s` }}
             >
+              {/* Heavenly glow aura */}
+              {isGold && (
+                <>
+                  {/* Soft white-gold outer glow */}
+                  <div
+                    className="absolute pointer-events-none -z-10 animate-heavenly-glow"
+                    style={{
+                      inset: "-30px -40px -20px -40px",
+                      background: "radial-gradient(ellipse at 50% 40%, rgba(255,255,255,0.6) 0%, rgba(255,248,220,0.3) 30%, rgba(255,223,150,0.15) 55%, transparent 75%)",
+                      borderRadius: "50%",
+                    }}
+                  />
+                  {/* Inner shimmer rays */}
+                  <div
+                    className="absolute pointer-events-none -z-10 animate-heavenly-rays"
+                    style={{
+                      inset: "-20px -30px -10px -30px",
+                      background: "conic-gradient(from 0deg, transparent 0%, rgba(255,255,255,0.4) 5%, transparent 10%, transparent 15%, rgba(255,248,200,0.3) 20%, transparent 25%, transparent 30%, rgba(255,255,255,0.35) 35%, transparent 40%, transparent 50%, rgba(255,248,200,0.25) 55%, transparent 60%, transparent 70%, rgba(255,255,255,0.3) 75%, transparent 80%, transparent 90%, rgba(255,248,200,0.2) 95%, transparent 100%)",
+                      borderRadius: "50%",
+                      filter: "blur(8px)",
+                    }}
+                  />
+                  {/* Floating light particles */}
+                  {[...Array(6)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="absolute pointer-events-none -z-10 w-2 h-2 rounded-full animate-light-particle"
+                      style={{
+                        background: "radial-gradient(circle, rgba(255,255,255,0.9), rgba(255,223,150,0.4))",
+                        boxShadow: "0 0 6px 2px rgba(255,255,255,0.5)",
+                        left: `${20 + i * 12}%`,
+                        top: `${10 + (i % 3) * 25}%`,
+                        animationDelay: `${i * 0.5}s`,
+                        animationDuration: `${3 + (i % 3)}s`,
+                      }}
+                    />
+                  ))}
+                </>
+              )}
               {/* Stick figure with avatar head */}
               <StickFigure
                 child={child}

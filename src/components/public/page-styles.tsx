@@ -361,6 +361,29 @@ export function PageStyles() {
       :global(.animate-podium-rise) {
         animation: podium-rise 0.7s ease-out forwards;
       }
+      @keyframes heavenly-glow {
+        0%, 100% { opacity: 0.5; transform: scale(1); }
+        50% { opacity: 0.85; transform: scale(1.08); }
+      }
+      :global(.animate-heavenly-glow) {
+        animation: heavenly-glow 3s ease-in-out infinite;
+      }
+      @keyframes heavenly-rays {
+        0% { transform: rotate(0deg); opacity: 0.6; }
+        100% { transform: rotate(360deg); opacity: 0.6; }
+      }
+      :global(.animate-heavenly-rays) {
+        animation: heavenly-rays 12s linear infinite;
+      }
+      @keyframes light-particle {
+        0%, 100% { transform: translateY(0) scale(0.5); opacity: 0; }
+        20% { opacity: 0.8; transform: translateY(-10px) scale(1); }
+        50% { opacity: 1; transform: translateY(-30px) scale(1.2); }
+        80% { opacity: 0.6; transform: translateY(-50px) scale(0.8); }
+      }
+      :global(.animate-light-particle) {
+        animation: light-particle 3s ease-in-out infinite;
+      }
       :global(.animate-pillar-grow) {
         animation: pillar-grow 0.8s ease-out forwards;
       }
