@@ -105,7 +105,7 @@ export default function ChildDetailPage() {
                     <div>
                       <p className="font-medium">{activity.category.name}</p>
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className="text-xs">{activity.categoryLevel.label}</Badge>
+                        <Badge variant="outline" className="text-xs">{activity.categoryLevel?.label ?? activity.levelLabel}</Badge>
                         {activity.note && <span className="text-xs text-muted-foreground">{activity.note}</span>}
                       </div>
                     </div>

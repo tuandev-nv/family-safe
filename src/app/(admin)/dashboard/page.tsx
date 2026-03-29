@@ -388,7 +388,7 @@ export default function DashboardPage() {
                             variant="outline"
                             className="text-xs font-medium"
                           >
-                            {activity.categoryLevel.label}
+                            {activity.categoryLevel?.label ?? activity.levelLabel}
                           </Badge>
                           <span className="text-xs text-gray-400">
                             {new Date(activity.createdAt).toLocaleString(

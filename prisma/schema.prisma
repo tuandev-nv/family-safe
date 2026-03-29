@@ -63,7 +63,7 @@ model Activity {
   id              String    @id @default(cuid())
   childId         String
   categoryId      String
-  categoryLevelId String
+  categoryLevelId String?
   points          Int
   note            String?
   // Snapshot at creation time
@@ -78,5 +78,5 @@ model Activity {
 
   child         Child         @relation(fields: [childId], references: [id], onDelete: Cascade)
   category      Category      @relation(fields: [categoryId], references: [id], onDelete: Restrict)
-  categoryLevel CategoryLevel @relation(fields: [categoryLevelId], references: [id], onDelete: Restrict)
+  categoryLevel CategoryLevel? @relation(fields: [categoryLevelId], references: [id], onDelete: Restrict)
 }

@@ -42,6 +42,9 @@ export function ActivityFormDialog({
   const [selectedChild, setSelectedChild] = useState(preselectedChildId ?? "");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("");
+  const [isCustomLevel, setIsCustomLevel] = useState(false);
+  const [customLabel, setCustomLabel] = useState("");
+  const [customPoints, setCustomPoints] = useState("");
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
   const [typeTab, setTypeTab] = useState<"REWARD" | "PENALTY">("REWARD");
@@ -51,6 +54,9 @@ export function ActivityFormDialog({
     setSelectedChild(preselectedChildId ?? "");
     setSelectedCategory("");
     setSelectedLevel("");
+    setIsCustomLevel(false);
+    setCustomLabel("");
+    setCustomPoints("");
     setNote("");
     setTypeTab("REWARD");
 
@@ -71,19 +77,34 @@ export function ActivityFormDialog({
   async function handleSubmit() {
     if (!selectedChild) { setFormError("Vui lòng chọn bé"); return; }
     if (!selectedCategory) { setFormError("Vui lòng chọn danh mục"); return; }
-    if (!selectedLevel) { setFormError("Vui lòng chọn cấp độ"); return; }
+    if (isCustomLevel) {
+      if (!customLabel.trim()) { setFormError("Vui lòng nhập tiêu đề"); return; }
+      if (!customPoints || isNaN(Number(customPoints))) { setFormError("Vui lòng nhập số điểm"); return; }
+    } else {
+      if (!selectedLevel) { setFormError("Vui lòng chọn cấp độ"); return; }
+    }
     setFormError("");
+
+    const body = isCustomLevel
+      ? {
+          childId: selectedChild,
+          categoryId: selectedCategory,
+          customLabel: customLabel.trim(),
+          customPoints: typeTab === "PENALTY" ? -Math.abs(Number(customPoints)) : Math.abs(Number(customPoints)),
+          note: note || undefined,
+        }
+      : {
+          childId: selectedChild,
+          categoryId: selectedCategory,
+          categoryLevelId: selectedLevel,
+          note: note || undefined,
+        };
 
     setLoading(true);
     const res = await fetch("/api/activities", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        childId: selectedChild,
-        categoryId: selectedCategory,
-        categoryLevelId: selectedLevel,
-        note: note || undefined,
-      }),
+      body: JSON.stringify(body),
     });
 
     setLoading(false);
@@ -190,9 +211,9 @@ export function ActivityFormDialog({
                 {selectedCat.levels.map((level) => (
                   <button
                     key={level.id}
-                    onClick={() => setSelectedLevel(level.id)}
+                    onClick={() => { setSelectedLevel(level.id); setIsCustomLevel(false); }}
                     className={`px-4 py-2.5 rounded-xl border-2 text-sm font-medium transition-all cursor-pointer ${
-                      selectedLevel === level.id
+                      selectedLevel === level.id && !isCustomLevel
                         ? "border-purple-500 bg-purple-50 text-purple-700 shadow-md shadow-purple-500/10"
                         : "border-gray-200 bg-white text-gray-700 hover:border-purple-300"
                     }`}
@@ -205,12 +226,52 @@ export function ActivityFormDialog({
                     </span>
                   </button>
                 ))}
+                {/* Custom level button */}
+                <button
+                  onClick={() => { setIsCustomLevel(true); setSelectedLevel(""); }}
+                  className={`px-4 py-2.5 rounded-xl border-2 text-sm font-medium transition-all cursor-pointer ${
+                    isCustomLevel
+                      ? "border-amber-500 bg-amber-50 text-amber-700 shadow-md shadow-amber-500/10"
+                      : "border-dashed border-gray-300 bg-white text-gray-500 hover:border-amber-400 hover:text-amber-600"
+                  }`}
+                >
+                  ✏️ Tự nhập
+                </button>
               </div>
+
+              {/* Custom level form */}
+              {isCustomLevel && (
+                <div className="mt-3 p-4 rounded-xl bg-amber-50/50 border border-amber-200 space-y-3">
+                  <div>
+                    <label className="text-xs font-bold text-gray-600 mb-1 block">Tiêu đề</label>
+                    <input
+                      type="text"
+                      value={customLabel}
+                      onChange={(e) => setCustomLabel(e.target.value)}
+                      placeholder="VD: Giúp mẹ rửa bát"
+                      maxLength={100}
+                      className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-600 mb-1 block">
+                      Số điểm {typeTab === "PENALTY" ? "(sẽ tự trừ)" : ""}
+                    </label>
+                    <input
+                      type="number"
+                      value={customPoints}
+                      onChange={(e) => setCustomPoints(e.target.value)}
+                      placeholder="VD: 5"
+                      className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
           {/* Step 4: Note */}
-          {selectedLevel && (
+          {(selectedLevel || isCustomLevel) && (
             <div>
               <label className="text-sm font-bold text-gray-700 mb-2.5 block flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-gray-200 text-gray-500 text-xs flex items-center justify-center font-bold">4</span>
@@ -235,7 +296,7 @@ export function ActivityFormDialog({
             </Button>
             <Button
               onClick={handleSubmit}
-              disabled={!selectedChild || !selectedCategory || !selectedLevel || loading}
+              disabled={!selectedChild || !selectedCategory || (!selectedLevel && !isCustomLevel) || loading}
               className="px-8 h-11 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/25 text-base font-bold"
             >
               {loading ? "Đang lưu..." : "Ghi nhận"}

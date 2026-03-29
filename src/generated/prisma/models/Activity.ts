@@ -237,7 +237,7 @@ export type ActivityGroupByOutputType = {
   id: string
   childId: string
   categoryId: string
-  categoryLevelId: string
+  categoryLevelId: string | null
   points: number
   note: string | null
   childName: string | null
@@ -277,7 +277,7 @@ export type ActivityWhereInput = {
   id?: Prisma.StringFilter<"Activity"> | string
   childId?: Prisma.StringFilter<"Activity"> | string
   categoryId?: Prisma.StringFilter<"Activity"> | string
-  categoryLevelId?: Prisma.StringFilter<"Activity"> | string
+  categoryLevelId?: Prisma.StringNullableFilter<"Activity"> | string | null
   points?: Prisma.IntFilter<"Activity"> | number
   note?: Prisma.StringNullableFilter<"Activity"> | string | null
   childName?: Prisma.StringNullableFilter<"Activity"> | string | null
@@ -290,14 +290,14 @@ export type ActivityWhereInput = {
   deletedAt?: Prisma.DateTimeNullableFilter<"Activity"> | Date | string | null
   child?: Prisma.XOR<Prisma.ChildScalarRelationFilter, Prisma.ChildWhereInput>
   category?: Prisma.XOR<Prisma.CategoryScalarRelationFilter, Prisma.CategoryWhereInput>
-  categoryLevel?: Prisma.XOR<Prisma.CategoryLevelScalarRelationFilter, Prisma.CategoryLevelWhereInput>
+  categoryLevel?: Prisma.XOR<Prisma.CategoryLevelNullableScalarRelationFilter, Prisma.CategoryLevelWhereInput> | null
 }
 
 export type ActivityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   childId?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
-  categoryLevelId?: Prisma.SortOrder
+  categoryLevelId?: Prisma.SortOrderInput | Prisma.SortOrder
   points?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   childName?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -320,7 +320,7 @@ export type ActivityWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ActivityWhereInput | Prisma.ActivityWhereInput[]
   childId?: Prisma.StringFilter<"Activity"> | string
   categoryId?: Prisma.StringFilter<"Activity"> | string
-  categoryLevelId?: Prisma.StringFilter<"Activity"> | string
+  categoryLevelId?: Prisma.StringNullableFilter<"Activity"> | string | null
   points?: Prisma.IntFilter<"Activity"> | number
   note?: Prisma.StringNullableFilter<"Activity"> | string | null
   childName?: Prisma.StringNullableFilter<"Activity"> | string | null
@@ -333,14 +333,14 @@ export type ActivityWhereUniqueInput = Prisma.AtLeast<{
   deletedAt?: Prisma.DateTimeNullableFilter<"Activity"> | Date | string | null
   child?: Prisma.XOR<Prisma.ChildScalarRelationFilter, Prisma.ChildWhereInput>
   category?: Prisma.XOR<Prisma.CategoryScalarRelationFilter, Prisma.CategoryWhereInput>
-  categoryLevel?: Prisma.XOR<Prisma.CategoryLevelScalarRelationFilter, Prisma.CategoryLevelWhereInput>
+  categoryLevel?: Prisma.XOR<Prisma.CategoryLevelNullableScalarRelationFilter, Prisma.CategoryLevelWhereInput> | null
 }, "id">
 
 export type ActivityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   childId?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
-  categoryLevelId?: Prisma.SortOrder
+  categoryLevelId?: Prisma.SortOrderInput | Prisma.SortOrder
   points?: Prisma.SortOrder
   note?: Prisma.SortOrderInput | Prisma.SortOrder
   childName?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -365,7 +365,7 @@ export type ActivityScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Activity"> | string
   childId?: Prisma.StringWithAggregatesFilter<"Activity"> | string
   categoryId?: Prisma.StringWithAggregatesFilter<"Activity"> | string
-  categoryLevelId?: Prisma.StringWithAggregatesFilter<"Activity"> | string
+  categoryLevelId?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
   points?: Prisma.IntWithAggregatesFilter<"Activity"> | number
   note?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
   childName?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
@@ -392,14 +392,14 @@ export type ActivityCreateInput = {
   deletedAt?: Date | string | null
   child: Prisma.ChildCreateNestedOneWithoutActivitiesInput
   category: Prisma.CategoryCreateNestedOneWithoutActivitiesInput
-  categoryLevel: Prisma.CategoryLevelCreateNestedOneWithoutActivitiesInput
+  categoryLevel?: Prisma.CategoryLevelCreateNestedOneWithoutActivitiesInput
 }
 
 export type ActivityUncheckedCreateInput = {
   id?: string
   childId: string
   categoryId: string
-  categoryLevelId: string
+  categoryLevelId?: string | null
   points: number
   note?: string | null
   childName?: string | null
@@ -426,14 +426,14 @@ export type ActivityUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   child?: Prisma.ChildUpdateOneRequiredWithoutActivitiesNestedInput
   category?: Prisma.CategoryUpdateOneRequiredWithoutActivitiesNestedInput
-  categoryLevel?: Prisma.CategoryLevelUpdateOneRequiredWithoutActivitiesNestedInput
+  categoryLevel?: Prisma.CategoryLevelUpdateOneWithoutActivitiesNestedInput
 }
 
 export type ActivityUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   childId?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
-  categoryLevelId?: Prisma.StringFieldUpdateOperationsInput | string
+  categoryLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   points?: Prisma.IntFieldUpdateOperationsInput | number
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   childName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -450,7 +450,7 @@ export type ActivityCreateManyInput = {
   id?: string
   childId: string
   categoryId: string
-  categoryLevelId: string
+  categoryLevelId?: string | null
   points: number
   note?: string | null
   childName?: string | null
@@ -481,7 +481,7 @@ export type ActivityUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   childId?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
-  categoryLevelId?: Prisma.StringFieldUpdateOperationsInput | string
+  categoryLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   points?: Prisma.IntFieldUpdateOperationsInput | number
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   childName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -702,13 +702,13 @@ export type ActivityCreateWithoutChildInput = {
   createdAt?: Date | string
   deletedAt?: Date | string | null
   category: Prisma.CategoryCreateNestedOneWithoutActivitiesInput
-  categoryLevel: Prisma.CategoryLevelCreateNestedOneWithoutActivitiesInput
+  categoryLevel?: Prisma.CategoryLevelCreateNestedOneWithoutActivitiesInput
 }
 
 export type ActivityUncheckedCreateWithoutChildInput = {
   id?: string
   categoryId: string
-  categoryLevelId: string
+  categoryLevelId?: string | null
   points: number
   note?: string | null
   childName?: string | null
@@ -753,7 +753,7 @@ export type ActivityScalarWhereInput = {
   id?: Prisma.StringFilter<"Activity"> | string
   childId?: Prisma.StringFilter<"Activity"> | string
   categoryId?: Prisma.StringFilter<"Activity"> | string
-  categoryLevelId?: Prisma.StringFilter<"Activity"> | string
+  categoryLevelId?: Prisma.StringNullableFilter<"Activity"> | string | null
   points?: Prisma.IntFilter<"Activity"> | number
   note?: Prisma.StringNullableFilter<"Activity"> | string | null
   childName?: Prisma.StringNullableFilter<"Activity"> | string | null
@@ -779,13 +779,13 @@ export type ActivityCreateWithoutCategoryInput = {
   createdAt?: Date | string
   deletedAt?: Date | string | null
   child: Prisma.ChildCreateNestedOneWithoutActivitiesInput
-  categoryLevel: Prisma.CategoryLevelCreateNestedOneWithoutActivitiesInput
+  categoryLevel?: Prisma.CategoryLevelCreateNestedOneWithoutActivitiesInput
 }
 
 export type ActivityUncheckedCreateWithoutCategoryInput = {
   id?: string
   childId: string
-  categoryLevelId: string
+  categoryLevelId?: string | null
   points: number
   note?: string | null
   childName?: string | null
@@ -883,7 +883,7 @@ export type ActivityUpdateManyWithWhereWithoutCategoryLevelInput = {
 export type ActivityCreateManyChildInput = {
   id?: string
   categoryId: string
-  categoryLevelId: string
+  categoryLevelId?: string | null
   points: number
   note?: string | null
   childName?: string | null
@@ -909,13 +909,13 @@ export type ActivityUpdateWithoutChildInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   category?: Prisma.CategoryUpdateOneRequiredWithoutActivitiesNestedInput
-  categoryLevel?: Prisma.CategoryLevelUpdateOneRequiredWithoutActivitiesNestedInput
+  categoryLevel?: Prisma.CategoryLevelUpdateOneWithoutActivitiesNestedInput
 }
 
 export type ActivityUncheckedUpdateWithoutChildInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
-  categoryLevelId?: Prisma.StringFieldUpdateOperationsInput | string
+  categoryLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   points?: Prisma.IntFieldUpdateOperationsInput | number
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   childName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -931,7 +931,7 @@ export type ActivityUncheckedUpdateWithoutChildInput = {
 export type ActivityUncheckedUpdateManyWithoutChildInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
-  categoryLevelId?: Prisma.StringFieldUpdateOperationsInput | string
+  categoryLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   points?: Prisma.IntFieldUpdateOperationsInput | number
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   childName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -947,7 +947,7 @@ export type ActivityUncheckedUpdateManyWithoutChildInput = {
 export type ActivityCreateManyCategoryInput = {
   id?: string
   childId: string
-  categoryLevelId: string
+  categoryLevelId?: string | null
   points: number
   note?: string | null
   childName?: string | null
@@ -973,13 +973,13 @@ export type ActivityUpdateWithoutCategoryInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   child?: Prisma.ChildUpdateOneRequiredWithoutActivitiesNestedInput
-  categoryLevel?: Prisma.CategoryLevelUpdateOneRequiredWithoutActivitiesNestedInput
+  categoryLevel?: Prisma.CategoryLevelUpdateOneWithoutActivitiesNestedInput
 }
 
 export type ActivityUncheckedUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   childId?: Prisma.StringFieldUpdateOperationsInput | string
-  categoryLevelId?: Prisma.StringFieldUpdateOperationsInput | string
+  categoryLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   points?: Prisma.IntFieldUpdateOperationsInput | number
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   childName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -995,7 +995,7 @@ export type ActivityUncheckedUpdateWithoutCategoryInput = {
 export type ActivityUncheckedUpdateManyWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   childId?: Prisma.StringFieldUpdateOperationsInput | string
-  categoryLevelId?: Prisma.StringFieldUpdateOperationsInput | string
+  categoryLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   points?: Prisma.IntFieldUpdateOperationsInput | number
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   childName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1091,7 +1091,7 @@ export type ActivitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   deletedAt?: boolean
   child?: boolean | Prisma.ChildDefaultArgs<ExtArgs>
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
-  categoryLevel?: boolean | Prisma.CategoryLevelDefaultArgs<ExtArgs>
+  categoryLevel?: boolean | Prisma.Activity$categoryLevelArgs<ExtArgs>
 }, ExtArgs["result"]["activity"]>
 
 export type ActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1111,7 +1111,7 @@ export type ActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   deletedAt?: boolean
   child?: boolean | Prisma.ChildDefaultArgs<ExtArgs>
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
-  categoryLevel?: boolean | Prisma.CategoryLevelDefaultArgs<ExtArgs>
+  categoryLevel?: boolean | Prisma.Activity$categoryLevelArgs<ExtArgs>
 }, ExtArgs["result"]["activity"]>
 
 export type ActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1131,7 +1131,7 @@ export type ActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   deletedAt?: boolean
   child?: boolean | Prisma.ChildDefaultArgs<ExtArgs>
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
-  categoryLevel?: boolean | Prisma.CategoryLevelDefaultArgs<ExtArgs>
+  categoryLevel?: boolean | Prisma.Activity$categoryLevelArgs<ExtArgs>
 }, ExtArgs["result"]["activity"]>
 
 export type ActivitySelectScalar = {
@@ -1155,17 +1155,17 @@ export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type ActivityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   child?: boolean | Prisma.ChildDefaultArgs<ExtArgs>
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
-  categoryLevel?: boolean | Prisma.CategoryLevelDefaultArgs<ExtArgs>
+  categoryLevel?: boolean | Prisma.Activity$categoryLevelArgs<ExtArgs>
 }
 export type ActivityIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   child?: boolean | Prisma.ChildDefaultArgs<ExtArgs>
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
-  categoryLevel?: boolean | Prisma.CategoryLevelDefaultArgs<ExtArgs>
+  categoryLevel?: boolean | Prisma.Activity$categoryLevelArgs<ExtArgs>
 }
 export type ActivityIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   child?: boolean | Prisma.ChildDefaultArgs<ExtArgs>
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
-  categoryLevel?: boolean | Prisma.CategoryLevelDefaultArgs<ExtArgs>
+  categoryLevel?: boolean | Prisma.Activity$categoryLevelArgs<ExtArgs>
 }
 
 export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1173,13 +1173,13 @@ export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     child: Prisma.$ChildPayload<ExtArgs>
     category: Prisma.$CategoryPayload<ExtArgs>
-    categoryLevel: Prisma.$CategoryLevelPayload<ExtArgs>
+    categoryLevel: Prisma.$CategoryLevelPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     childId: string
     categoryId: string
-    categoryLevelId: string
+    categoryLevelId: string | null
     points: number
     note: string | null
     childName: string | null
@@ -1586,7 +1586,7 @@ export interface Prisma__ActivityClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   child<T extends Prisma.ChildDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChildDefaultArgs<ExtArgs>>): Prisma.Prisma__ChildClient<runtime.Types.Result.GetResult<Prisma.$ChildPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   category<T extends Prisma.CategoryDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CategoryDefaultArgs<ExtArgs>>): Prisma.Prisma__CategoryClient<runtime.Types.Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  categoryLevel<T extends Prisma.CategoryLevelDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CategoryLevelDefaultArgs<ExtArgs>>): Prisma.Prisma__CategoryLevelClient<runtime.Types.Result.GetResult<Prisma.$CategoryLevelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  categoryLevel<T extends Prisma.Activity$categoryLevelArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Activity$categoryLevelArgs<ExtArgs>>): Prisma.Prisma__CategoryLevelClient<runtime.Types.Result.GetResult<Prisma.$CategoryLevelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2026,6 +2026,25 @@ export type ActivityDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Activities to delete.
    */
   limit?: number
+}
+
+/**
+ * Activity.categoryLevel
+ */
+export type Activity$categoryLevelArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CategoryLevel
+   */
+  select?: Prisma.CategoryLevelSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CategoryLevel
+   */
+  omit?: Prisma.CategoryLevelOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CategoryLevelInclude<ExtArgs> | null
+  where?: Prisma.CategoryLevelWhereInput
 }
 
 /**

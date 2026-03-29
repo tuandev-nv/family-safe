@@ -179,7 +179,7 @@ export default function ActivitiesPage() {
                           </p>
                           <div className="flex items-center gap-2 mt-0.5">
                             <Badge variant="outline" className="text-xs font-medium">
-                              {activity.categoryLevel.label}
+                              {activity.categoryLevel?.label ?? activity.levelLabel}
                             </Badge>
                             {activity.note && (
                               <span className="text-xs text-gray-400 italic">{activity.note}</span>

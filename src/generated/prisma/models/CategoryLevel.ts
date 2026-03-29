@@ -440,9 +440,9 @@ export type CategoryLevelSumOrderByAggregateInput = {
   sortOrder?: Prisma.SortOrder
 }
 
-export type CategoryLevelScalarRelationFilter = {
-  is?: Prisma.CategoryLevelWhereInput
-  isNot?: Prisma.CategoryLevelWhereInput
+export type CategoryLevelNullableScalarRelationFilter = {
+  is?: Prisma.CategoryLevelWhereInput | null
+  isNot?: Prisma.CategoryLevelWhereInput | null
 }
 
 export type CategoryLevelCreateNestedManyWithoutCategoryInput = {
@@ -493,10 +493,12 @@ export type CategoryLevelCreateNestedOneWithoutActivitiesInput = {
   connect?: Prisma.CategoryLevelWhereUniqueInput
 }
 
-export type CategoryLevelUpdateOneRequiredWithoutActivitiesNestedInput = {
+export type CategoryLevelUpdateOneWithoutActivitiesNestedInput = {
   create?: Prisma.XOR<Prisma.CategoryLevelCreateWithoutActivitiesInput, Prisma.CategoryLevelUncheckedCreateWithoutActivitiesInput>
   connectOrCreate?: Prisma.CategoryLevelCreateOrConnectWithoutActivitiesInput
   upsert?: Prisma.CategoryLevelUpsertWithoutActivitiesInput
+  disconnect?: Prisma.CategoryLevelWhereInput | boolean
+  delete?: Prisma.CategoryLevelWhereInput | boolean
   connect?: Prisma.CategoryLevelWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.CategoryLevelUpdateToOneWithWhereWithoutActivitiesInput, Prisma.CategoryLevelUpdateWithoutActivitiesInput>, Prisma.CategoryLevelUncheckedUpdateWithoutActivitiesInput>
 }

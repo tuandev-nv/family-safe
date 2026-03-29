@@ -22,6 +22,7 @@ export async function GET() {
             select: {
               points: true,
               createdAt: true,
+              levelLabel: true,
               category: { select: { name: true, type: true, icon: true } },
               categoryLevel: { select: { label: true } },
             },
@@ -59,7 +60,7 @@ export async function GET() {
         categoryName: a.category.name,
         categoryIcon: a.category.icon,
         categoryType: a.category.type,
-        levelLabel: a.categoryLevel.label,
+        levelLabel: a.categoryLevel?.label ?? a.levelLabel ?? "",
       })),
     }));
 

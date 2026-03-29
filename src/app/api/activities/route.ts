@@ -66,26 +66,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Fetch all related data for snapshot
+    const isCustom = !parsed.data.categoryLevelId;
+
+    // Fetch related data for snapshot
     const [child, category, level] = await Promise.all([
       prisma.child.findFirst({ where: { id: parsed.data.childId, ...notDeleted } }),
       prisma.category.findFirst({ where: { id: parsed.data.categoryId, ...notDeleted } }),
-      prisma.categoryLevel.findFirst({ where: { id: parsed.data.categoryLevelId, ...notDeleted } }),
+      isCustom
+        ? Promise.resolve(null)
+        : prisma.categoryLevel.findFirst({ where: { id: parsed.data.categoryLevelId, ...notDeleted } }),
     ]);
 
-    if (!child || !category || !level) {
+    if (!child || !category || (!isCustom && !level)) {
       return NextResponse.json(
         { error: "Dữ liệu không tồn tại" },
         { status: 400 }
       );
     }
 
+    const points = isCustom ? parsed.data.customPoints! : level!.points;
+    const labelSnapshot = isCustom ? parsed.data.customLabel! : level!.label;
+
     const activity = await prisma.activity.create({
       data: {
         childId: child.id,
         categoryId: category.id,
-        categoryLevelId: level.id,
-        points: level.points,
+        categoryLevelId: isCustom ? null : level!.id,
+        points,
         note: parsed.data.note ?? null,
         // Snapshot
         childName: child.name,
@@ -93,7 +100,7 @@ export async function POST(request: NextRequest) {
         categoryName: category.name,
         categoryIcon: category.icon,
         categoryType: category.type,
-        levelLabel: level.label,
+        levelLabel: labelSnapshot,
       },
       include: {
         child: true,
